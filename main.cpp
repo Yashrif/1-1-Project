@@ -155,18 +155,19 @@ int main()
             system("cls");
 
             //Clock over Mid Panel
-            string date_str;
-            string_date_now(date_str);
+            string time_str;
+            get_time_now(time_str); //geting time now
             SetConsoleTextAttribute(color, 9);
             console_cursor.X = clock_x_start;
             console_cursor.Y = clock_y_start;
             set_console_cursor(console_cursor);
-            cout<<"10:45 PM";
-            //clock time will be added here
-
+            cout<<time_str;
+            
+            get_date_now(time_str); //getting date now
+            console_cursor.X = clock_x_start;
             console_cursor.Y +=1;
             set_console_cursor(console_cursor);
-            cout<<date_str;
+            cout<<time_str;
 
 
             SetConsoleTextAttribute(color, 15);
