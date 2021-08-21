@@ -6,7 +6,6 @@
 #include "user_funcion.h"
 #include "Main_Menu.h"
 #include "Side_Menu.h"
-
 using namespace std;
 
 int main()
@@ -25,6 +24,11 @@ int main()
     mid_y_start = (console_height * 15) / 100;
     mid_y_end = (console_height * 85) / 100;
     mid_y = mid_y_end - mid_y_start;
+
+    //Clock over Mid Panel
+    int clock_y_start{0}, clock_x_start{0};
+    clock_y_start = (console_height * 5) / 100;
+    clock_x_start = (console_width * 38) / 100 - 10;
 
     COORD console_cursor{0, 0};
 
@@ -149,6 +153,21 @@ int main()
             // std::this_thread::sleep_for(std::chrono::seconds(1));
 
             system("cls");
+
+            //Clock over Mid Panel
+            string date_str;
+            string_date_now(date_str);
+            SetConsoleTextAttribute(color, 9);
+            console_cursor.X = clock_x_start;
+            console_cursor.Y = clock_y_start;
+            set_console_cursor(console_cursor);
+            cout<<"10:45 PM";
+            //clock time will be added here
+
+            console_cursor.Y +=1;
+            set_console_cursor(console_cursor);
+            cout<<date_str;
+
 
             SetConsoleTextAttribute(color, 15);
             for (size_t i{0}; i < mid_y; i++)
