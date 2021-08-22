@@ -124,7 +124,7 @@ int main()
         if (key == 13)
         {
             if(sub_menu_status==true){
-                (((main_menu).at(line)).get_content_address(sub_line))->toggle();
+                (((main_menu).at(line)).get_content_address(sub_line))->toggle();// eikhane toggle korar try krsi
                main_menu_status == true;
             }
             else if (main_menu_access == true)
@@ -251,7 +251,7 @@ int main()
                         set_console_cursor(console_cursor);
 
                         for (size_t j{0}; j < (((main_menu).at(line)).get_content(i)).get_content_size(); j++)
-                            cout<< (((main_menu).at(line)).get_content(i)).get_active_status()
+                            cout<< (((main_menu).at(line)).get_content(i)).get_active_status() //r eikhane 
                             <<' '<< (((main_menu).at(line)).get_content(i)).get_content(j) << endl;
                     }
                     console_cursor = cord;

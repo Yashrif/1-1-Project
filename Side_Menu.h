@@ -35,7 +35,7 @@ public:
     int get_content_size();
     char get_active_status();
     //methods
-    void toggle();
+    void toggle();// For changing the current status
 };
 
 int Side_Menu::num{0};
