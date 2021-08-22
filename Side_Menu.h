@@ -10,11 +10,18 @@ class Side_Menu
 private:
     static int num;
     char *title;
+    char active_status;
+    char passive_status;
     COORD cordinator;
     std::vector<char *> content;
     int title_serial;
 
 public:
+    Side_Menu(){
+        this->active_status=char(254);
+        this->passive_status=char(251);
+
+    }
     //Setters
     bool add_object(std::string title_value, int title_serial_value);
     bool add_content(const char *content_value);
@@ -26,6 +33,9 @@ public:
     const char *get_content(int index_number) const;
     int get_title_serial();
     int get_content_size();
+    char get_active_status();
+    //methods
+    void toggle();
 };
 
 int Side_Menu::num{0};
@@ -61,3 +71,8 @@ COORD Side_Menu::get_cordinator() { return cordinator; }
 const char *Side_Menu::get_content(int index_number) const { return content.at(index_number); }
 int Side_Menu::get_title_serial() { return title_serial; }
 int Side_Menu::get_content_size() { return content.size(); }
+char Side_Menu::get_active_status(){ return this->active_status;}
+
+//methods
+
+void Side_Menu::toggle(){ swap(this->active_status,this->passive_status);}

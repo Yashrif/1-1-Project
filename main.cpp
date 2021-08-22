@@ -9,7 +9,8 @@
 using namespace std;
 
 int main()
-{
+{   
+    setFontSize(10,22,800);
     HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
 
     int console_width{0}, console_height{0};
@@ -21,14 +22,14 @@ int main()
     //Mid Panel
     int mid_x_mid{0}, mid_y_start{0}, mid_y_end{0}, mid_y;
     mid_x_mid = (console_width * 38) / 100 - 2;
-    mid_y_start = (console_height * 15) / 100;
+    mid_y_start = (console_height * 18) / 100;
     mid_y_end = (console_height * 85) / 100;
     mid_y = mid_y_end - mid_y_start;
 
     //Clock over Mid Panel
     int clock_y_start{0}, clock_x_start{0};
     clock_y_start = (console_height * 5) / 100;
-    clock_x_start = (console_width * 38) / 100 - 10;
+    clock_x_start = (console_width * 38) / 100 - 7;
 
     COORD console_cursor{0, 0};
 
@@ -122,12 +123,17 @@ int main()
         }
         if (key == 13)
         {
-            if (main_menu_access == true)
+            if(sub_menu_status==true){
+                (((main_menu).at(line)).get_content_address(sub_line))->toggle();
+               main_menu_status == true;
+            }
+            else if (main_menu_access == true)
             {
                 main_menu_status = true;
                 sub_menu_status = true;
                 main_menu_access = false;
             }
+            
         }
 
         if (key == 27)
@@ -158,7 +164,7 @@ int main()
             string time_str;
             get_time_now(time_str); //geting time now
             SetConsoleTextAttribute(color, 9);
-            console_cursor.X = clock_x_start;
+            console_cursor.X = clock_x_start+2;
             console_cursor.Y = clock_y_start;
             set_console_cursor(console_cursor);
             cout<<time_str;
@@ -176,16 +182,18 @@ int main()
                 console_cursor.X = mid_x_mid;
                 console_cursor.Y = mid_y_start + i;
                 set_console_cursor(console_cursor);
-
+                char border_char=char(221);
+                SetConsoleTextAttribute(color, 8);
                 if (i >= (mid_y * 20) / 100 && i <= (mid_y * 80) / 100)
-                    cout << "|";
+                    cout << border_char;
                 else
                     cout << " ";
-                cout << "|";
+                cout << border_char;
                 if (i >= (mid_y * 20) / 100 && i <= (mid_y * 80) / 100)
-                    cout << "|";
+                    cout << border_char;
 
                 cout << endl;
+                SetConsoleTextAttribute(color, 15);
             }
 
             console_cursor.X = 0;
@@ -243,8 +251,8 @@ int main()
                         set_console_cursor(console_cursor);
 
                         for (size_t j{0}; j < (((main_menu).at(line)).get_content(i)).get_content_size(); j++)
-                            cout
-                                << (((main_menu).at(line)).get_content(i)).get_content(j) << endl;
+                            cout<< (((main_menu).at(line)).get_content(i)).get_active_status()
+                            <<' '<< (((main_menu).at(line)).get_content(i)).get_content(j) << endl;
                     }
                     console_cursor = cord;
                 }

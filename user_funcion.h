@@ -76,3 +76,17 @@ void get_time_now(std::string &returnval){
     
     returnval =std::to_string(hour_now)+':'+std::to_string(ltm.tm_min)+pm_am;
 }
+
+void setFontSize(int sizex,int sizey,int weight) {
+    CONSOLE_FONT_INFOEX cfi;
+    cfi.cbSize = sizeof(cfi);
+    cfi.nFont = 0;
+    cfi.dwFontSize.X = sizex;                   // Width of each character in the font
+    cfi.dwFontSize.Y = sizey;                  // Height
+    cfi.FontFamily = FF_DONTCARE;
+    //normal weight is 400, while 700 is bold,use multiple of 100
+    cfi.FontWeight = weight;     
+    // std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
+    SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+
+}
