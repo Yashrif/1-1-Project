@@ -9,27 +9,20 @@
 using namespace std;
 
 int main()
-{   
-    setFontSize(10,22,800);
+{
+    set_font_size(9, 19.125, 600);
     HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
 
     int console_width{0}, console_height{0};
-    console_size(&console_width, &console_height);
     vector<Main_Menu> main_menu{0};
 
     //Left Panel
 
     //Mid Panel
     int mid_x_mid{0}, mid_y_start{0}, mid_y_end{0}, mid_y;
-    mid_x_mid = (console_width * 38) / 100 - 2;
-    mid_y_start = (console_height * 18) / 100;
-    mid_y_end = (console_height * 85) / 100;
-    mid_y = mid_y_end - mid_y_start;
 
     //Clock over Mid Panel
     int clock_y_start{0}, clock_x_start{0};
-    clock_y_start = (console_height * 5) / 100;
-    clock_x_start = (console_width * 38) / 100 - 7;
 
     COORD console_cursor{0, 0};
 
@@ -77,55 +70,81 @@ int main()
     bool main_menu_status{false};
     bool sub_menu_status{false};
     bool main_menu_access{false};
-
+    static int console_width_temp, console_height_temp;
     while (1)
     {
+        //Get Key
+
         key = '\0';
         if (_kbhit())
             key = _getch();
+
+        //Console Size
+
+        console_size(&console_width, &console_height);
+        if (console_width != console_width_temp || console_height != console_height_temp)
+        {
+            mid_x_mid = (console_width * 38) / 100 - 2;
+            mid_y_start = (console_height * 20) / 100;
+            mid_y_end = (console_height * 85) / 100;
+            mid_y = mid_y_end - mid_y_start;
+            clock_y_start = (console_height * 5) / 100;
+            clock_x_start = (console_width * 38) / 100 - 7;
+            console_width_temp = console_width;
+            console_height_temp = console_height;
+
+            display_chk = true;
+            console_cursor_status(false);
+        }
+
+        //Down Arrow Key
 
         if (key == 0x50)
         {
             if (sub_menu_status == true)
             {
                 sub_line++;
-                if (sub_line < ((main_menu.at(line)).get_content_number()))
-                    main_menu_status = true;
-                else
-                    sub_line--;
+                if (sub_line >= ((main_menu.at(line)).get_content_number()))
+                    sub_line = 0;
+                main_menu_status = true;
             }
             else
             {
                 line++;
-                if (line < main_menu.size())
-                    display_chk = true;
-                else
-                    line--;
+                if (line >= main_menu.size())
+                    line = 0;
+                display_chk = true;
             }
         }
+
+        //Up Arrow Key
+
         else if (key == 0x48)
         {
             if (sub_menu_status == true)
             {
-                if (sub_line > 0)
-                {
-                    sub_line--;
-                    main_menu_status = true;
-                }
-                else
-                    sub_line--;
+                sub_line--;
+                if (sub_line < 0)
+                    sub_line = (main_menu.at(line)).get_content_number() - 1;
+                main_menu_status = true;
             }
-            else if (line > 0)
+            else
             {
                 line--;
+                if (line < 0)
+                    line = main_menu.size() - 1;
                 display_chk = true;
             }
         }
+
+        //Enter Key
+
         if (key == 13)
         {
-            if(sub_menu_status==true){
-                (((main_menu).at(line)).get_content_address(sub_line))->toggle();//toggle the status
-               main_menu_status = true;//this introduces unexpected behaviours
+            if (sub_menu_status == true)
+            {
+                (((main_menu).at(line)).get_content_address(sub_line))->toggle(); //toggle the status
+                main_menu_status = true;                                          //this introduces unexpected behaviours
             }
             else if (main_menu_access == true)
             {
@@ -133,7 +152,6 @@ int main()
                 sub_menu_status = true;
                 main_menu_access = false;
             }
-            
         }
 
         if (key == 27)
@@ -164,17 +182,16 @@ int main()
             string time_str;
             get_time_now(time_str); //geting time now
             SetConsoleTextAttribute(color, 9);
-            console_cursor.X = clock_x_start+2;
+            console_cursor.X = clock_x_start + 2;
             console_cursor.Y = clock_y_start;
             set_console_cursor(console_cursor);
-            cout<<time_str;
-            
+            cout << time_str;
+
             get_date_now(time_str); //getting date now
             console_cursor.X = clock_x_start;
-            console_cursor.Y +=1;
+            console_cursor.Y += 1;
             set_console_cursor(console_cursor);
-            cout<<time_str;
-
+            cout << time_str;
 
             SetConsoleTextAttribute(color, 15);
             for (size_t i{0}; i < mid_y; i++)
@@ -182,8 +199,8 @@ int main()
                 console_cursor.X = mid_x_mid;
                 console_cursor.Y = mid_y_start + i;
                 set_console_cursor(console_cursor);
-                char border_char=char(221);
-                SetConsoleTextAttribute(color, 8);
+                char border_char = char(179);
+                SetConsoleTextAttribute(color, 14);
                 if (i >= (mid_y * 20) / 100 && i <= (mid_y * 80) / 100)
                     cout << border_char;
                 else
@@ -251,8 +268,8 @@ int main()
                         set_console_cursor(console_cursor);
 
                         for (size_t j{0}; j < (((main_menu).at(line)).get_content(i)).get_content_size(); j++)
-                            cout<< (((main_menu).at(line)).get_content(i)).get_active_status() 
-                            <<' '<< (((main_menu).at(line)).get_content(i)).get_content(j) << endl;
+                            cout << (((main_menu).at(line)).get_content(i)).get_active_status()
+                                 << ' ' << (((main_menu).at(line)).get_content(i)).get_content(j) << endl;
                     }
                     console_cursor = cord;
                 }
