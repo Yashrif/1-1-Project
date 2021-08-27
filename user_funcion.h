@@ -63,7 +63,7 @@ void get_date_now(std::string &returnval)
     if (tm.size() < 2)
         tm = "0" + tm;
 
-    returnval += tm + " " + months[ltm.tm_mon + 1] + " ";
+    returnval += tm + " " + months[ltm.tm_mon + 1] + ", ";
     returnval += std::to_string(1900 + ltm.tm_year);
 }
 
@@ -83,7 +83,9 @@ void get_time_now(std::string &returnval)
     else if (!hour_now)
         hour_now = 12;
 
-    returnval = std::to_string(hour_now) + ':' + std::to_string(ltm.tm_min) + pm_am;
+    returnval = std::to_string(hour_now) + ':';
+    (ltm.tm_min < 10) ? returnval += "0" + std::to_string(ltm.tm_min) : returnval += std::to_string(ltm.tm_min);
+    returnval += pm_am;
 }
 
 void set_font_size(int width, int height, int weight)
