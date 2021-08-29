@@ -16,6 +16,8 @@ int main()
     int console_width{0}, console_height{0};
     vector<Main_Menu> main_menu{0};
 
+    /*-----------Titles-------*/
+
     //Left Panel
     int left_main_x{0}, left_main_y{0}, left_sub_x{0}, left_sub_y{0}, left_y;
 
@@ -24,6 +26,10 @@ int main()
 
     //Clock over Mid Panel
     int clock_y_start{0}, clock_x_start{0};
+
+    /*--------Transition---------*/
+
+    const int main_menu_delay{150}, sub_menu_delay{100};
 
     COORD console_cursor{0, 0};
 
@@ -77,9 +83,10 @@ int main()
     char key;
     int main_line{-1};
     int sub_line{-1};
-    bool display_chk{true}, sub_menu_delay_print{true};
+    bool display_chk{true}, main_menu_delay_print{true}, sub_menu_delay_print{true};
     bool main_menu_status{true}, sub_menu_status{false};
     int console_width_temp, console_height_temp;
+    COORD temp_cord{0};
 
     while (1)
     {
@@ -260,12 +267,28 @@ int main()
                     else
                         console_cursor.Y = left_main_y + ceil((temp * i) / 4.0);
 
-                    (main_line == i) ? SetConsoleTextAttribute(color, 6) : SetConsoleTextAttribute(color, 11);
-
+                    (main_line == i) ? SetConsoleTextAttribute(color, 12) : SetConsoleTextAttribute(color, 11);
                     set_console_cursor(console_cursor);
-                    cout << (main_menu.at(i)).get_title() << endl;
+
+                    if (main_menu_delay_print == true)
+                        delay_print((main_menu.at(i)).get_title(), main_menu_delay);
+
+                    else
+                    {
+                        if (sub_menu_status == false && main_line == i)
+                            temp_cord = console_cursor;
+                        else
+                            cout << (main_menu.at(i)).get_title() << endl;
+                        if (sub_menu_status == false && i == main_menu.size() - 1)
+                        {
+                            SetConsoleTextAttribute(color, 6);
+                            set_console_cursor(temp_cord);
+                            delay_print((main_menu.at(main_line)).get_title(), main_menu_delay);
+                        }
+                    }
                 }
             }
+            main_menu_delay_print = false;
 
             //Sub Panel
 
@@ -276,23 +299,34 @@ int main()
 
                 for (size_t i{0}; i < (main_menu.at(main_line)).get_content_number(); i++)
                 {
-                    (sub_line == i) ? SetConsoleTextAttribute(color, 6) : SetConsoleTextAttribute(color, 15);
-
                     console_cursor.Y += 2;
                     set_console_cursor(console_cursor);
                     COORD cord{console_cursor};
+                    SetConsoleTextAttribute(color, 15);
 
                     if (sub_menu_delay_print == true)
-                        delay_print(((main_menu.at(main_line)).get_content(i)).get_title(), 200);
+                        delay_print(((main_menu.at(main_line)).get_content(i)).get_title(), sub_menu_delay);
 
                     else
-                        cout << ((main_menu.at(main_line)).get_content(i)).get_title() << endl;
+                    {
+                        if (sub_line == i)
+                            temp_cord = console_cursor;
+                        else
+                            (cout << ((main_menu.at(main_line)).get_content(i)).get_title() << endl);
+                        if (i == (main_menu.at(main_line)).get_content_number() - 1)
+                        {
+                            SetConsoleTextAttribute(color, 6);
+                            set_console_cursor(temp_cord);
+                            delay_print(((main_menu.at(main_line)).get_content(sub_line)).get_title(), sub_menu_delay);
+                        }
+                    }
 
                     if (sub_line == i)
                     {
                         console_cursor.X = (console_width * 45) / 100;
                         console_cursor.Y = 5;
                         set_console_cursor(console_cursor);
+                        SetConsoleTextAttribute(color, 15);
 
                         for (size_t j{0}; j < (((main_menu).at(main_line)).get_content(i)).get_content_size(); j++)
                             cout << (((main_menu).at(main_line)).get_content(i)).get_active_status()
