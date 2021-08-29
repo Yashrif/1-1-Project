@@ -35,37 +35,57 @@ void console_size(int *x, int *y)
     *y = cursor_buffer.srWindow.Bottom - cursor_buffer.srWindow.Top + 1;
 }
 
-void delay_print(std::string title, int time_milliseconds)
+char delay_print(std::string title, int time_milliseconds)
 {
-    for (size_t i{0}; i < title.length(); i++)
+    char key{'\0'};
+    size_t time_now{0}, time_now_2{0};
+    int i{0};
+    time_milliseconds = time_milliseconds / title.length();
+    while (1)
     {
-        std::cout << title[i];
-        std::this_thread::sleep_for(std::chrono::milliseconds(time_milliseconds / title.length()));
+        time_now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        if (time_now - time_now_2 >= time_milliseconds)
+        {
+            std::cout << title[i];
+            i++;
+            if (i == title.length())
+                break;
+            time_now_2 = time_now;
+        }
+        if (_kbhit())
+        {
+            key = _getch();
+            time_milliseconds = 0;
+        }
     }
+    return key;
 }
-void delay_print(int serial, std::string title, int time_milliseconds)
+char delay_print(int serial, std::string title, int time_milliseconds)
 {
+    char key{'\0'};
     std::cout << serial << ". ";
-    for (size_t i{0}; i < title.length(); i++)
+    size_t time_now{0}, time_now_2{0};
+    int i{0};
+    time_milliseconds = time_milliseconds / title.length();
+    while (1)
     {
-        std::cout << title[i];
-        std::this_thread::sleep_for(std::chrono::milliseconds(time_milliseconds / title.length()));
+        time_now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        if (time_now - time_now_2 >= time_milliseconds)
+        {
+            std::cout << title[i];
+            i++;
+            if (i == title.length())
+                break;
+            time_now_2 = time_now;
+        }
+        if (_kbhit())
+        {
+            key = _getch();
+            time_milliseconds = 0;
+        }
     }
+    return key;
 }
-
-// void delay_print(std::string str_1, std::string str_2, int time_milliseconds)
-// {
-//     for (size_t i{0}; i < str_1.length(); i++)
-//     {
-//         std::cout << str_1[i];
-//         std::this_thread::sleep_for(std::chrono::milliseconds(time_milliseconds / str_1.length()));
-//     }
-//     for (size_t i{0}; i < str_2.length(); i++)
-//     {
-//         std::cout << str_2[i];
-//         std::this_thread::sleep_for(std::chrono::milliseconds(time_milliseconds / str_2.length()));
-//     }
-// }
 
 void get_local_time(struct tm &ltm)
 {

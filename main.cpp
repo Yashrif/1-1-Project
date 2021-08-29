@@ -29,7 +29,7 @@ int main()
 
     /*--------Transition---------*/
 
-    const int main_menu_delay{150}, sub_menu_delay{100}, max_sub_menu_display{5};
+    const int main_menu_delay_duration{300}, sub_menu_delay_duration{250}, max_sub_menu_display{5};
 
     COORD console_cursor{0, 0};
 
@@ -95,11 +95,11 @@ int main()
     COORD menu_cordinate{0, 0};
     console_cursor_status(false);
 
-    char key;
+    char key, temp_key{'\0'};
     int main_line{-1}, sub_line{-1}, sub_display_line{0};
-    bool display_chk{true}, main_menu_delay_print{true}, sub_menu_delay_print{true}, sub_max_check{false};
+    bool display_chk{true}, main_menu_delay_duration_print{true}, sub_menu_delay_duration_print{true}, sub_max_check{false};
     bool main_menu_status{true}, sub_menu_status{false};
-    int console_width_temp, console_height_temp;
+    int console_width_temp, console_height_temp, delay_temp;
     COORD temp_cord{0};
 
     while (1)
@@ -109,6 +109,12 @@ int main()
         key = '\0';
         if (_kbhit())
             key = _getch();
+
+        if ((main_menu_status == true || sub_menu_status == true) && temp_key != '\0')
+        {
+            key = temp_key;
+            temp_key = '\0';
+        }
 
         //Console Size
 
@@ -145,7 +151,8 @@ int main()
                 sub_line++;
                 if (sub_line >= ((main_menu.at(main_line)).get_content_number()))
                     sub_line = 0;
-                if (sub_max_check == true)
+
+                if (sub_line >= ceil(max_sub_menu_display / 2.0) && sub_line <= (main_menu.at(main_line)).get_content_number() - 3)
                 {
                     if (++sub_display_line >= (main_menu.at(main_line)).get_content_number())
                         sub_display_line = 0;
@@ -177,10 +184,7 @@ int main()
                 sub_line--;
                 if (sub_line < 0)
                     sub_line = (main_menu.at(main_line)).get_content_number() - 1;
-                if (sub_line == (main_menu.at(main_line)).get_content_number() - ceil(max_sub_menu_display / 2.0))
-                    sub_max_check = true;
-
-                if (sub_max_check == true)
+                if (sub_line <= (main_menu.at(main_line)).get_content_number() - ceil(max_sub_menu_display / 2.0) && sub_line >= 2)
                 {
                     sub_display_line = sub_line - 2;
                     if (sub_display_line < 0)
@@ -232,7 +236,7 @@ int main()
                 display_chk = true;
                 main_menu_status = true;
                 sub_menu_status = false;
-                sub_menu_delay_print = true;
+                sub_menu_delay_duration_print = true;
                 sub_max_check = false;
 
                 sub_line = -1;
@@ -292,7 +296,7 @@ int main()
             {
                 console_cursor.X = left_main_x;
                 console_cursor.Y = left_main_y;
-
+                delay_temp = main_menu_delay_duration;
                 int temp{0};
                 (sub_menu_status == true) ? temp = left_y - max_sub_menu_display * 2 : temp = left_y;
 
@@ -315,8 +319,15 @@ int main()
                     (main_line == i) ? SetConsoleTextAttribute(color, 12) : SetConsoleTextAttribute(color, 11);
                     set_console_cursor(console_cursor);
 
-                    if (main_menu_delay_print == true)
-                        delay_print((main_menu.at(i)).get_title(), main_menu_delay);
+                    if (main_menu_delay_duration_print == true)
+                    {
+                        char temp_char = delay_print((main_menu.at(i)).get_title(), delay_temp);
+                        if (temp_char != '\0')
+                        {
+                            delay_temp = 0;
+                            temp_key = temp_char;
+                        }
+                    }
 
                     else
                     {
@@ -328,12 +339,12 @@ int main()
                         {
                             SetConsoleTextAttribute(color, 6);
                             set_console_cursor(temp_cord);
-                            delay_print((main_menu.at(main_line)).get_title(), main_menu_delay);
+                            temp_key = delay_print((main_menu.at(main_line)).get_title(), main_menu_delay_duration);
                         }
                     }
                 }
             }
-            main_menu_delay_print = false;
+            main_menu_delay_duration_print = false;
 
             //Sub Panel
 
@@ -341,7 +352,7 @@ int main()
             {
                 console_cursor = ((main_menu).at(main_line)).get_cordinator();
                 console_cursor.X = (console_width * 5) / 100 + 4;
-
+                delay_temp = sub_menu_delay_duration;
                 int temp{0};
                 (max_sub_menu_display <= (main_menu.at(main_line)).get_content_number()) ? temp = max_sub_menu_display : temp = (main_menu.at(main_line)).get_content_number();
                 int temp_sub_line = sub_display_line;
@@ -352,8 +363,15 @@ int main()
                     COORD cord{console_cursor};
                     SetConsoleTextAttribute(color, 15);
 
-                    if (sub_menu_delay_print == true)
-                        delay_print(((main_menu.at(main_line)).get_content(temp_sub_line)).get_title_serial(), ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title(), sub_menu_delay);
+                    if (sub_menu_delay_duration_print == true)
+                    {
+                        char temp_char = delay_print(((main_menu.at(main_line)).get_content(temp_sub_line)).get_title_serial(), ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title(), delay_temp);
+                        if (temp_char != '\0')
+                        {
+                            delay_temp = 0;
+                            temp_key = temp_char;
+                        }
+                    }
 
                     else
                     {
@@ -365,7 +383,7 @@ int main()
                         {
                             SetConsoleTextAttribute(color, 6);
                             set_console_cursor(temp_cord);
-                            delay_print(((main_menu.at(main_line)).get_content(sub_line)).get_title_serial(), ((main_menu.at(main_line)).get_content(sub_line)).get_title(), sub_menu_delay);
+                            temp_key = delay_print(((main_menu.at(main_line)).get_content(sub_line)).get_title_serial(), ((main_menu.at(main_line)).get_content(sub_line)).get_title(), sub_menu_delay_duration);
                         }
                     }
 
@@ -384,7 +402,7 @@ int main()
                     if (++temp_sub_line >= (main_menu.at(main_line)).get_content_number())
                         temp_sub_line = 0;
                 }
-                sub_menu_delay_print = false;
+                sub_menu_delay_duration_print = false;
                 if ((main_menu.at(main_line)).get_content_number() == 0)
                     goto exit_sub_menu;
             }
