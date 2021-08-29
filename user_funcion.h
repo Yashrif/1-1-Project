@@ -43,6 +43,29 @@ void delay_print(std::string title, int time_milliseconds)
         std::this_thread::sleep_for(std::chrono::milliseconds(time_milliseconds / title.length()));
     }
 }
+void delay_print(int serial, std::string title, int time_milliseconds)
+{
+    std::cout << serial << ". ";
+    for (size_t i{0}; i < title.length(); i++)
+    {
+        std::cout << title[i];
+        std::this_thread::sleep_for(std::chrono::milliseconds(time_milliseconds / title.length()));
+    }
+}
+
+// void delay_print(std::string str_1, std::string str_2, int time_milliseconds)
+// {
+//     for (size_t i{0}; i < str_1.length(); i++)
+//     {
+//         std::cout << str_1[i];
+//         std::this_thread::sleep_for(std::chrono::milliseconds(time_milliseconds / str_1.length()));
+//     }
+//     for (size_t i{0}; i < str_2.length(); i++)
+//     {
+//         std::cout << str_2[i];
+//         std::this_thread::sleep_for(std::chrono::milliseconds(time_milliseconds / str_2.length()));
+//     }
+// }
 
 void get_local_time(struct tm &ltm)
 {
