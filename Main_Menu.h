@@ -22,9 +22,9 @@ public:
 
     //Getters
     const char *get_title() const;
+    int get_content_number() const;
     COORD get_cordinator() const;
     Side_Menu get_content(int index_number) const;
-    int get_content_number() const;
     Side_Menu *const get_content_address(int index_number);
 };
 
@@ -65,7 +65,7 @@ bool Main_Menu::add_user_data_to_file(Main_Menu &user)
 //Getters
 
 const char *Main_Menu::get_title() const { return title; }
+int Main_Menu::get_content_number() const { return content.size(); }
 COORD Main_Menu::get_cordinator() const { return cordinator; }
 Side_Menu Main_Menu::get_content(int index_number) const { return content.at(index_number); }
-int Main_Menu::get_content_number() const { return content.size(); }
 Side_Menu *const Main_Menu::get_content_address(int index_number) { return &content.at(index_number); }

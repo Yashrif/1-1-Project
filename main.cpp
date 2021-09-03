@@ -19,10 +19,13 @@ int main()
     /*-----------Titles-------*/
 
     //Left Panel
-    int left_main_x{0}, left_main_y{0}, left_sub_x{0}, left_sub_y{0}, left_y;
+    int left_main_x_start{0}, left_main_y_start{0}, left_main_height, left_sub_x_start{0}, left_sub_y_start{0};
 
     //Mid Panel
-    int mid_x_mid{0}, mid_y_start{0}, mid_y_end{0}, mid_y;
+    int mid_x_start{0}, mid_y_start{0}, mid_y_end{0}, mid_y;
+    //Mid Panel
+
+    int right_x_start{0}, right_y_start{0};
 
     //Clock over Mid Panel
     int clock_y_start{0}, clock_x_start{0};
@@ -95,11 +98,32 @@ int main()
     COORD menu_cordinate{0, 0};
     console_cursor_status(false);
 
+    /*-------------Key-------------*/
+
     char key, temp_key{'\0'};
-    int main_line{-1}, sub_line{-1}, sub_display_line{0};
-    bool display_chk{true}, main_menu_delay_duration_print{true}, sub_menu_delay_duration_print{true}, sub_max_check{false};
-    bool main_menu_status{true}, sub_menu_status{false};
-    int console_width_temp, console_height_temp, delay_temp;
+
+    /*-------------Console-------------*/
+
+    int console_width_temp, console_height_temp;
+
+    /*-------------Main Menu-------------*/
+
+    int main_menu_status{true}, main_line{-1}, main_line_2{0}, main_menu_delay_status{true};
+
+    /*-------------Sub Menu-------------*/
+
+    int sub_menu_status{false}, sub_line{-1}, sub_line_2{0}, sub_display_line{0}, sub_menu_delay_status{true}, sub_max_check{false};
+
+    /*-------------Clock, Date & Mid Panel-------------*/
+
+    bool date_separator_display{true}, time_update{false};
+    struct tm time_now;
+    int time_now_min{0};
+
+    /*-------------Others-------------*/
+
+    int delay_temp;
+    bool display_chk{true};
     COORD temp_cord{0};
 
     while (1)
@@ -107,39 +131,59 @@ int main()
         //Get Key
 
         key = '\0';
-        if (_kbhit())
-            key = _getch();
 
-        if ((main_menu_status == true || sub_menu_status == true) && temp_key != '\0')
+        // if ((main_menu_status == true || sub_menu_status == true) && temp_key != '\0')
+        if (temp_key != '\0')
         {
             key = temp_key;
             temp_key = '\0';
         }
 
-        //Console Size
+        if (_kbhit())
+            key = _getch();
+
+        /*--------------------------
+                Console Size
+        --------------------------*/
 
         console_size(&console_width, &console_height);
         if (console_width != console_width_temp || console_height != console_height_temp)
         {
-            //Left Panel
-            left_y = (console_height * 80) / 100;
-            left_main_x = (console_width * 5) / 100;
-            left_main_y = console_height / 5;
-
-            // Mid Panel
-            mid_x_mid = (console_width * 38) / 100 - 2;
-            mid_y_start = (console_height * 20) / 100;
-            mid_y_end = (console_height * 85) / 100;
-            mid_y = mid_y_end - mid_y_start;
-
             //Clock over Mid Panel
             clock_y_start = (console_height * 5) / 100;
             clock_x_start = (console_width * 38) / 100 - 1;
             console_width_temp = console_width;
             console_height_temp = console_height;
 
+            //Left Panel
+
+            //Main Menu
+            left_main_height = (console_height * 80) / 100;
+            left_main_x_start = (console_width * 5) / 100;
+            left_main_y_start = console_height / 5;
+
+            //Sub Menu
+            left_sub_x_start = (console_width * 5) / 100 + 4;
+
+            // Mid Panel
+            mid_x_start = (console_width * 38) / 100 - 2;
+            mid_y_start = (console_height * 20) / 100;
+            mid_y_end = (console_height * 85) / 100;
+            mid_y = mid_y_end - mid_y_start;
+
+            // Right Panel
+            right_x_start = (console_width * 45) / 100;
+            right_y_start = console_height / 5;
+
+            main_menu_delay_status = true;
+            sub_menu_delay_status = true;
+
             display_chk = true;
+            main_menu_status = true;
             console_cursor_status(false);
+
+            system("cls");
+            date_separator_display = true;
         }
 
         //Down Arrow Key
@@ -205,6 +249,7 @@ int main()
                 main_line--;
                 if (main_line < 0)
                     main_line = main_menu.size() - 1;
+                main_menu_status = true;
             }
             display_chk = true;
         }
@@ -217,12 +262,15 @@ int main()
             {
                 (((main_menu).at(main_line)).get_content_address(sub_line))->toggle(); //toggle the status
                 display_chk = true;
-                main_menu_status = true;
             }
             else if (main_menu_status == true)
             {
                 display_chk = true;
                 sub_menu_status = true;
+                main_menu_status = true;
+
+                system("cls");
+                date_separator_display = true;
             }
         }
 
@@ -230,75 +278,117 @@ int main()
 
         if (key == 27)
         {
+
         exit_sub_menu:
+
             if (sub_menu_status == true)
             {
-                display_chk = true;
-                main_menu_status = true;
                 sub_menu_status = false;
-                sub_menu_delay_duration_print = true;
                 sub_max_check = false;
 
+                display_chk = true;
+                main_menu_status = true;
+                sub_menu_delay_status = true;
+
                 sub_line = -1;
+                sub_line_2 = 0;
                 sub_display_line = 0;
+
+                system("cls");
+                date_separator_display = true;
             }
+
             else if (main_menu_status == true)
                 break;
         }
 
+        /*----------------------
+                Clock
+        ----------------------*/
+        get_local_time(time_now);
+        if (time_now.tm_min != time_now_min)
+        {
+            time_update = true;
+            goto time_print;
+
+        get_time:
+
+            time_update = false;
+            time_now_min = time_now.tm_min;
+        }
+
         if (display_chk == true)
         {
-            system("cls");
+            /*--------------------------
+                    Mid Section
+            --------------------------*/
 
-            //Clock over Mid Panel
-
-            string time_str;
-            get_time_now(time_str); //geting time now
-            SetConsoleTextAttribute(color, 9);
-            console_cursor.X = clock_x_start - (time_str.length() / 2);
-            console_cursor.Y = clock_y_start;
-            set_console_cursor(console_cursor);
-            cout << time_str;
-
-            get_date_now(time_str); //getting date now
-            console_cursor.X = clock_x_start - (time_str.length() / 2);
-            console_cursor.Y += 1;
-            set_console_cursor(console_cursor);
-            cout << time_str;
-
-            //Mid Panel
-
-            SetConsoleTextAttribute(color, 15);
-            for (size_t i{0}; i < mid_y; i++)
+            if (date_separator_display == true)
             {
-                console_cursor.X = mid_x_mid;
-                console_cursor.Y = mid_y_start + i;
+
+                /*---------------- Clock over Mid Panel---------------*/
+
+            time_print:
+
+                string time_str;
+                get_time_now(time_str); //geting time now
+                SetConsoleTextAttribute(color, 9);
+                console_cursor.X = clock_x_start - (time_str.length() / 2);
+                console_cursor.Y = clock_y_start;
                 set_console_cursor(console_cursor);
-                char border_char = char(179);
-                SetConsoleTextAttribute(color, 14);
-                if (i >= (mid_y * 20) / 100 && i <= (mid_y * 80) / 100)
-                    cout << border_char;
-                else
-                    cout << " ";
-                cout << border_char;
-                if (i >= (mid_y * 20) / 100 && i <= (mid_y * 80) / 100)
-                    cout << border_char;
+                cout << time_str;
 
-                cout << endl;
+                if (time_update == true)
+                    goto get_time;
+
+                get_date_now(time_str); //getting date now
+                console_cursor.X = clock_x_start - (time_str.length() / 2);
+                console_cursor.Y += 1;
+                set_console_cursor(console_cursor);
+                cout << time_str;
+
+                /*----------------Separator---------------*/
+
                 SetConsoleTextAttribute(color, 15);
+                for (size_t i{0}; i < mid_y; i++)
+                {
+                    console_cursor.X = mid_x_start;
+                    console_cursor.Y = mid_y_start + i;
+                    set_console_cursor(console_cursor);
+                    char border_char = char(179);
+                    SetConsoleTextAttribute(color, 14);
+                    if (i >= (mid_y * 20) / 100 && i <= (mid_y * 80) / 100)
+                        cout << border_char;
+                    else
+                        cout << " ";
+                    cout << border_char;
+                    if (i >= (mid_y * 20) / 100 && i <= (mid_y * 80) / 100)
+                        cout << border_char;
+
+                    cout << endl;
+                    SetConsoleTextAttribute(color, 15);
+                }
             }
+            date_separator_display = false;
 
-            /*--------------Left Panel----------*/
+            /*-----------------------------------------
+                            Left Panel
+            -----------------------------------------*/
 
-            //Main Panel
+            /*-----------------Main Panel-----------*/
 
             if (main_menu_status == true)
             {
-                console_cursor.X = left_main_x;
-                console_cursor.Y = left_main_y;
-                delay_temp = main_menu_delay_duration;
+                console_cursor.X = left_main_x_start;
+                console_cursor.Y = left_main_y_start;
+
+                (main_line_2 != main_line) ? delay_temp = main_menu_delay_duration : delay_temp = 0;
+
                 int temp{0};
-                (sub_menu_status == true) ? temp = left_y - max_sub_menu_display * 2 : temp = left_y;
+
+                (sub_menu_status == true)
+                    ? temp = left_main_height - max_sub_menu_display * 2
+                    : temp = left_main_height;
 
                 for (size_t i{0}; i < main_menu.size(); i++)
                 {
@@ -307,19 +397,19 @@ int main()
                     {
                         if (i <= main_line)
                         {
-                            console_cursor.Y = left_main_y + ceil((temp * i) / 4.0);
+                            console_cursor.Y = left_main_y_start + round((temp * i) / 4.0);
                             ((main_menu).at(i)).set_cordinator(console_cursor);
                         }
                         else
-                            console_cursor.Y = left_main_y + ceil((temp * i) / 4.0) + (max_sub_menu_display * 2);
+                            console_cursor.Y = left_main_y_start + round((temp * i) / 4.0) + (max_sub_menu_display * 2);
                     }
                     else
-                        console_cursor.Y = left_main_y + ceil((temp * i) / 4.0);
+                        console_cursor.Y = left_main_y_start + round((temp * i) / 4.0);
 
                     (main_line == i) ? SetConsoleTextAttribute(color, 12) : SetConsoleTextAttribute(color, 11);
                     set_console_cursor(console_cursor);
 
-                    if (main_menu_delay_duration_print == true)
+                    if (main_menu_delay_status == true)
                     {
                         char temp_char = delay_print((main_menu.at(i)).get_title(), delay_temp);
                         if (temp_char != '\0')
@@ -335,27 +425,44 @@ int main()
                             temp_cord = console_cursor;
                         else
                             cout << (main_menu.at(i)).get_title() << endl;
+
                         if (sub_menu_status == false && i == main_menu.size() - 1)
                         {
                             SetConsoleTextAttribute(color, 6);
                             set_console_cursor(temp_cord);
-                            temp_key = delay_print((main_menu.at(main_line)).get_title(), main_menu_delay_duration);
+                            cout << string(mid_x_start - left_sub_x_start, ' ');
+
+                            set_console_cursor(temp_cord);
+                            temp_key = delay_print((main_menu.at(main_line)).get_title(), delay_temp);
                         }
                     }
                 }
             }
-            main_menu_delay_duration_print = false;
 
-            //Sub Panel
+            main_line_2 = main_line;
+
+            main_menu_delay_status = false;
+
+            /*-----------Sub Panel-------------*/
 
             if (sub_menu_status == true)
             {
+
+                main_menu_status == false; //Stoping Main Menu printing
+
                 console_cursor = ((main_menu).at(main_line)).get_cordinator();
                 console_cursor.X = (console_width * 5) / 100 + 4;
-                delay_temp = sub_menu_delay_duration;
+
+                (sub_line_2 != sub_line) ? delay_temp = sub_menu_delay_duration : delay_temp = 0;
+
                 int temp{0};
-                (max_sub_menu_display <= (main_menu.at(main_line)).get_content_number()) ? temp = max_sub_menu_display : temp = (main_menu.at(main_line)).get_content_number();
+
+                (max_sub_menu_display <= (main_menu.at(main_line)).get_content_number())
+                    ? temp = max_sub_menu_display
+                    : temp = (main_menu.at(main_line)).get_content_number();
+
                 int temp_sub_line = sub_display_line;
+
                 for (size_t i{0}; i < temp; i++)
                 {
                     console_cursor.Y += 2;
@@ -363,9 +470,10 @@ int main()
                     COORD cord{console_cursor};
                     SetConsoleTextAttribute(color, 15);
 
-                    if (sub_menu_delay_duration_print == true)
+                    if (sub_menu_delay_status == true)
                     {
-                        char temp_char = delay_print(((main_menu.at(main_line)).get_content(temp_sub_line)).get_title_serial(), ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title(), delay_temp);
+                        char temp_char = delay_print(to_string(((main_menu.at(main_line)).get_content(temp_sub_line)).get_title_serial()) + ". " + ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title(), delay_temp);
+
                         if (temp_char != '\0')
                         {
                             delay_temp = 0;
@@ -378,31 +486,47 @@ int main()
                         if (sub_line == temp_sub_line)
                             temp_cord = console_cursor;
                         else
-                            (cout << ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title_serial() << ". " << ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title() << endl);
+                            cout << ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title_serial()
+                                 << ". " << ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title()
+                                 << string(mid_x_start - left_sub_x_start - (((main_menu.at(main_line)).get_content(temp_sub_line)).get_title()).length() - 5, ' ')
+                                 << endl;
+
                         if (i == temp - 1)
                         {
                             SetConsoleTextAttribute(color, 6);
                             set_console_cursor(temp_cord);
-                            temp_key = delay_print(((main_menu.at(main_line)).get_content(sub_line)).get_title_serial(), ((main_menu.at(main_line)).get_content(sub_line)).get_title(), sub_menu_delay_duration);
+                            cout << string(mid_x_start - left_sub_x_start, ' ');
+                            set_console_cursor(temp_cord);
+                            temp_key = delay_print(to_string(((main_menu.at(main_line)).get_content(sub_line)).get_title_serial()) + ". " + ((main_menu.at(main_line)).get_content(sub_line)).get_title(), delay_temp);
                         }
                     }
 
                     if (sub_line == temp_sub_line)
                     {
                         console_cursor.X = (console_width * 45) / 100;
-                        console_cursor.Y = 5;
-                        set_console_cursor(console_cursor);
-                        SetConsoleTextAttribute(color, 15);
 
                         for (size_t j{0}; j < (((main_menu).at(main_line)).get_content(temp_sub_line)).get_content_size(); j++)
+                        {
+                            console_cursor.Y = right_y_start + (2 * j);
+
+                            set_console_cursor(console_cursor);
+
+                            ((((main_menu).at(main_line)).get_content(temp_sub_line)).get_active_status() == char(251))
+                                ? SetConsoleTextAttribute(color, 8)
+                                : SetConsoleTextAttribute(color, 15);
+
                             cout << (((main_menu).at(main_line)).get_content(temp_sub_line)).get_active_status()
-                                 << ' ' << (((main_menu).at(main_line)).get_content(temp_sub_line)).get_content(j) << endl;
+                                 << ' ' << (((main_menu).at(main_line)).get_content(temp_sub_line)).get_content(j)
+                                 << string((((main_menu).at(main_line)).get_content(temp_sub_line)).get_highest_length() - ((((main_menu).at(main_line)).get_content(temp_sub_line)).get_content(j)).length(), ' ') << endl;
+                        }
                     }
                     console_cursor = cord;
                     if (++temp_sub_line >= (main_menu.at(main_line)).get_content_number())
                         temp_sub_line = 0;
                 }
-                sub_menu_delay_duration_print = false;
+                sub_line_2 = sub_line;
+                sub_menu_delay_status = false;
+
                 if ((main_menu.at(main_line)).get_content_number() == 0)
                     goto exit_sub_menu;
             }
