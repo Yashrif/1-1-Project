@@ -1,70 +1,67 @@
 #pragma once
 #include <bits/stdc++.h>
-#include <windows.h>
-#include <conio.h>
-#include <fstream>
-#include <chrono>
+#include "Main_Menu.h"
+
 using namespace std;
 class Side_Menu
 {
 private:
-    static int size;
+    static int title_number;
     static int highest_length;
 
-    char *title;
+    std::string title;
     int title_serial;
     char active_status, passive_status;
-    std::vector<char *> content;
+    std::vector<std::string> content;
 
 public:
+    friend class Main_Menu;
     Side_Menu()
     {
         this->active_status = char(254);
         this->passive_status = char(251);
-        title_serial = ++this->size;
+        this->title_serial = ++this->title_number;
     }
     //Setters;
     bool set_title(const std::string title_value);
-    bool add_content(const char *content_value);
+    bool add_content(const std::string content_value);
 
     //Getters
-    const string get_title() const;
-    const string get_content(int index_number) const;
+    const std::string get_title() const;
+    const std::string get_content(int index_number) const;
     const int get_title_serial();
     const int get_content_size();
     const int get_highest_length();
     const char get_active_status();
-    
+
     //methods
     void toggle(); // For changing the current status
 };
 
-int Side_Menu::size{0};
+int Side_Menu::title_number{0};
 int Side_Menu::highest_length{0};
 
 //Setters
 bool Side_Menu::set_title(const std::string title_value)
 {
-    title = new char[title_value.length() + 1];
-    std::strcpy(title, title_value.c_str());
+    title = title_value;
 
     return true;
 }
-bool Side_Menu::add_content(const char *content_value)
+bool Side_Menu::add_content(const std::string content_value)
 {
-    content.push_back(new char[std::strlen(content_value) + 1]);
-    std::strcpy(content.at(content.size() - 1), content_value);
+    content.push_back(content_value);
 
-    if (strlen(content_value) > highest_length)
-        highest_length = strlen(content_value);
+    if ((content_value).length() > highest_length)
+        highest_length = (content_value).length();
 
     return true;
 }
 
 //Getters
 
-const string Side_Menu::get_title() const { return title; }
-const string Side_Menu::get_content(int index_number) const { return content.at(index_number); }
+const std::string Side_Menu::get_title() const { return title; }
+const std::string Side_Menu::get_content(int index_number) const { return content.at(index_number); }
 const int Side_Menu::get_title_serial() { return title_serial; }
 const int Side_Menu::get_content_size() { return content.size(); }
 const int Side_Menu::get_highest_length() { return highest_length; }

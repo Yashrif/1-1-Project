@@ -1,7 +1,9 @@
+#include <bits/stdc++.h>
 #include <chrono>
 #include <windows.h>
-#include <iostream>
 #include <string>
+#include "Main_Menu.h"
+#include "Side_Menu.h"
 
 HANDLE out_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -60,32 +62,6 @@ char delay_print(std::string title, int time_milliseconds)
     }
     return key;
 }
-// char delay_print(int serial, std::string title, int time_milliseconds)
-// {
-//     char key{'\0'};
-//     std::cout << serial << ". ";
-//     size_t time_now{0}, time_now_2{0};
-//     int i{0};
-//     time_milliseconds = time_milliseconds / title.length();
-//     while (1)
-//     {
-//         time_now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-//         if (time_now - time_now_2 >= time_milliseconds)
-//         {
-//             std::cout << title[i];
-//             i++;
-//             if (i == title.length())
-//                 break;
-//             time_now_2 = time_now;
-//         }
-//         if (_kbhit())
-//         {
-//             key = _getch();
-//             time_milliseconds = 0;
-//         }
-//     }
-//     return key;
-// }
 
 void get_local_time(struct tm &ltm)
 {
@@ -143,3 +119,5 @@ void set_font_size(int width, int height, int weight)
     std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 }
+
+

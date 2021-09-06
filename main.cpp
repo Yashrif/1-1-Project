@@ -32,71 +32,85 @@ int main()
 
     /*--------Transition---------*/
 
-    const int main_menu_delay_duration{300}, sub_menu_delay_duration{250}, max_sub_menu_display{5};
+    const int main_menu_delay_duration{300}, sub_menu_delay_duration{250}, sub_menu_max_display{5};
 
-    COORD console_cursor{0, 0};
+    /*-------------------Reading from file-------------*/
 
-    //temporary code---------------------------------- experimental purpose
-    {
+    main_menu.push_back(Main_Menu());
+    main_menu.at(0).get_data_from_file("0");
+    main_menu.push_back(Main_Menu());
+    main_menu.at(1).get_data_from_file("Diary");
+    main_menu.push_back(Main_Menu());
+    main_menu.at(2).get_data_from_file("2");
+    main_menu.push_back(Main_Menu());
+    main_menu.at(3).get_data_from_file("Settings");
 
-        Side_Menu t1, t2, t3, t4, t5, t6, t7, t8;
-        t1.set_title("take breakfast");
-        t1.add_content("taken");
+    // //temporary code---------------------------------- experimental purpose
+    // {
 
-        t2.set_title("take lunch");
-        t2.add_content("nope");
+    //     Side_Menu t1, t2, t3, t4, t5, t6, t7, t8;
+    //     t1.set_title("take breakfast");
+    //     t1.add_content("taken");
 
-        t3.set_title("take breakfast");
-        t3.add_content("taken");
+    //     t2.set_title("take lunch");
+    //     t2.add_content("nope");
 
-        t4.set_title("take lunch");
-        t4.add_content("nope");
+    //     t3.set_title("take breakfast");
+    //     t3.add_content("taken");
 
-        t5.set_title("take lunch");
-        t5.add_content("nope");
+    //     t4.set_title("take lunch");
+    //     t4.add_content("nope");
 
-        t6.set_title("take lunch");
-        t6.add_content("nope");
+    //     t5.set_title("take lunch");
+    //     t5.add_content("nope");
 
-        t7.set_title("take lunch");
-        t7.add_content("nope");
+    //     t6.set_title("take lunch");
+    //     t6.add_content("nope");
 
-        t8.set_title("take lunch");
-        t8.add_content("nope");
+    //     t7.set_title("take lunch");
+    //     t7.add_content("nope");
 
-        Main_Menu temp, temp2, temp3;
-        temp.set_title("To Do List");
-        main_menu.push_back(temp);
-        (main_menu.at(0)).add_content(t1);
-        (main_menu.at(0)).add_content(t2);
-        (main_menu.at(0)).add_content(t3);
-        (main_menu.at(0)).add_content(t4);
-        (main_menu.at(0)).add_content(t5);
-        (main_menu.at(0)).add_content(t6);
-        (main_menu.at(0)).add_content(t7);
-        (main_menu.at(0)).add_content(t8);
+    //     t8.set_title("take lunch");
+    //     t8.add_content("nope");
 
-        temp2.set_title("Diary");
-        main_menu.push_back(temp2);
-        (main_menu.at(1)).add_content(t1);
-        (main_menu.at(1)).add_content(t2);
-        (main_menu.at(1)).add_content(t3);
-        (main_menu.at(1)).add_content(t4);
-        (main_menu.at(1)).add_content(t4);
-        temp2.add_content(t2);
+    //     Main_Menu temp, temp2, temp3;
+    //     temp.set_title("To Do List");
+    //     main_menu.push_back(temp);
+    //     (main_menu.at(0)).add_content(t1);
+    //     (main_menu.at(0)).add_content(t2);
+    //     (main_menu.at(0)).add_content(t3);
+    //     (main_menu.at(0)).add_content(t4);
+    //     (main_menu.at(0)).add_content(t5);
+    //     (main_menu.at(0)).add_content(t6);
+    //     (main_menu.at(0)).add_content(t7);
+    //     (main_menu.at(0)).add_content(t8);
 
-        temp3.set_title("Reminders");
-        main_menu.push_back(temp3);
-        (main_menu.at(2)).add_content(t2);
-        (main_menu.at(2)).add_content(t3);
-        (main_menu.at(2)).add_content(t4);
-        (main_menu.at(2)).add_content(t4);
-    }
+    //     temp2.set_title("Diary");
+    //     main_menu.push_back(temp2);
+    //     (main_menu.at(1)).add_content(t1);
+    //     (main_menu.at(1)).add_content(t2);
+    //     (main_menu.at(1)).add_content(t3);
+    //     (main_menu.at(1)).add_content(t4);
+    //     (main_menu.at(1)).add_content(t4);
+    //     temp2.add_content(t2);
 
-    console_cursor.X = 0;
-    console_cursor.Y = 0;
-    COORD menu_cordinate{0, 0};
-    console_cursor_status(false);
+    //     temp3.set_title("Reminders");
+    //     main_menu.push_back(temp3);
+    //     (main_menu.at(2)).add_content(t2);
+    //     (main_menu.at(2)).add_content(t3);
+    //     (main_menu.at(2)).add_content(t4);
+    //     (main_menu.at(2)).add_content(t4);
+
+    //     temp3.set_title("Settings");
+    //     main_menu.push_back(temp3);
+    // }
+
+    // main_menu.at(0).add_data_to_file();
+    // main_menu.at(1).add_data_to_file();
+    // main_menu.at(2).add_data_to_file();
+    // main_menu.at(3).add_data_to_file();
+
+    // std::this_thread::sleep_for(std::chrono::seconds(5));
 
     /*-------------Key-------------*/
 
@@ -124,7 +138,8 @@ int main()
 
     int delay_temp;
     bool display_chk{true};
-    COORD temp_cord{0};
+    COORD console_cursor{0, 0}, menu_cordinate{0, 0}, temp_cord{0};
+    console_cursor_status(false);
 
     while (1)
     {
@@ -149,23 +164,25 @@ int main()
         console_size(&console_width, &console_height);
         if (console_width != console_width_temp || console_height != console_height_temp)
         {
-            //Clock over Mid Panel
-            clock_y_start = (console_height * 5) / 100;
-            clock_x_start = (console_width * 38) / 100 - 1;
-            console_width_temp = console_width;
-            console_height_temp = console_height;
 
-            //Left Panel
+            /*-------------Left Panel------------*/
 
             //Main Menu
-            left_main_height = (console_height * 80) / 100;
             left_main_x_start = (console_width * 5) / 100;
             left_main_y_start = console_height / 5;
+            left_main_height = (console_height * 0.75);
 
             //Sub Menu
             left_sub_x_start = (console_width * 5) / 100 + 4;
 
-            // Mid Panel
+            /*-------------Mid Panel------------*/
+
+            //Clock over Mid Panel
+            clock_y_start = (console_height * 5) / 100;
+            clock_x_start = (console_width * 38) / 100 - 1;
+
+            //Seperator
+
             mid_x_start = (console_width * 38) / 100 - 2;
             mid_y_start = (console_height * 20) / 100;
             mid_y_end = (console_height * 85) / 100;
@@ -175,15 +192,18 @@ int main()
             right_x_start = (console_width * 45) / 100;
             right_y_start = console_height / 5;
 
-            main_menu_delay_status = true;
-            sub_menu_delay_status = true;
+            console_width_temp = console_width;
+            console_height_temp = console_height;
 
             display_chk = true;
             main_menu_status = true;
+            main_menu_delay_status = true;
+            sub_menu_delay_status = true;
+            date_separator_display = true;
+
             console_cursor_status(false);
 
             system("cls");
-            date_separator_display = true;
         }
 
         //Down Arrow Key
@@ -196,16 +216,16 @@ int main()
                 if (sub_line >= ((main_menu.at(main_line)).get_content_number()))
                     sub_line = 0;
 
-                if (sub_line >= ceil(max_sub_menu_display / 2.0) && sub_line <= (main_menu.at(main_line)).get_content_number() - 3)
+                if (sub_line >= ceil(sub_menu_max_display / 2.0) && sub_line < (main_menu.at(main_line)).get_content_number() - (sub_menu_max_display / 2.0))
                 {
                     if (++sub_display_line >= (main_menu.at(main_line)).get_content_number())
                         sub_display_line = 0;
                 }
 
-                else if (sub_line < floor(max_sub_menu_display / 2.0))
+                else if (sub_line < floor(sub_menu_max_display / 2.0))
                     sub_display_line = 0;
 
-                if (sub_line == floor(max_sub_menu_display / 2.0))
+                if (sub_line == floor(sub_menu_max_display / 2.0))
                     sub_max_check = true;
 
                 main_menu_status = true;
@@ -228,15 +248,15 @@ int main()
                 sub_line--;
                 if (sub_line < 0)
                     sub_line = (main_menu.at(main_line)).get_content_number() - 1;
-                if (sub_line <= (main_menu.at(main_line)).get_content_number() - ceil(max_sub_menu_display / 2.0) && sub_line >= 2)
+                if (sub_line <= (main_menu.at(main_line)).get_content_number() - ceil(sub_menu_max_display / 2.0) && sub_line >= sub_menu_max_display / 2)
                 {
-                    sub_display_line = sub_line - 2;
+                    sub_display_line = sub_line - sub_menu_max_display / 2;
                     if (sub_display_line < 0)
-                        sub_display_line = (main_menu.at(main_line)).get_content_number() + sub_line - 2;
+                        sub_display_line = (main_menu.at(main_line)).get_content_number() + sub_line - sub_menu_max_display / 2;
                 }
-                else if (sub_line > floor(max_sub_menu_display / 2.0))
+                else if (sub_line > floor(sub_menu_max_display / 2.0))
                 {
-                    sub_display_line = (main_menu.at(main_line)).get_content_number() - 5;
+                    sub_display_line = (main_menu.at(main_line)).get_content_number() - sub_menu_max_display;
                     if (sub_display_line < 0)
                         sub_display_line = 0;
                 }
@@ -384,30 +404,31 @@ int main()
 
                 (main_line_2 != main_line) ? delay_temp = main_menu_delay_duration : delay_temp = 0;
 
-                int temp{0};
+                int temp_height{0}, temp_size{0};
 
-                (sub_menu_status == true)
-                    ? temp = left_main_height - max_sub_menu_display * 2
-                    : temp = left_main_height;
+                if (sub_menu_status == true)
+                {
+                    (sub_menu_max_display <= (main_menu.at(main_line)).get_content_number())
+                        ? temp_size = sub_menu_max_display * 2 + 1
+                        : temp_size = (main_menu.at(main_line)).get_content_number() * 2 + 1;
+                    temp_height = left_main_height - temp_size;
+                }
+                else
+                    temp_height = left_main_height;
+
+                size_t temp_height_space{temp_height / (main_menu.size())};
 
                 for (size_t i{0}; i < main_menu.size(); i++)
                 {
+                    set_console_cursor(console_cursor);
 
-                    if (sub_menu_status == true)
+                    if (sub_menu_status == true && i == main_line)
                     {
-                        if (i <= main_line)
-                        {
-                            console_cursor.Y = left_main_y_start + round((temp * i) / 4.0);
-                            ((main_menu).at(i)).set_cordinator(console_cursor);
-                        }
-                        else
-                            console_cursor.Y = left_main_y_start + round((temp * i) / 4.0) + (max_sub_menu_display * 2);
+                        ((main_menu).at(i)).set_cordinator(console_cursor);
+                        console_cursor.Y += temp_size;
                     }
-                    else
-                        console_cursor.Y = left_main_y_start + round((temp * i) / 4.0);
 
                     (main_line == i) ? SetConsoleTextAttribute(color, 12) : SetConsoleTextAttribute(color, 11);
-                    set_console_cursor(console_cursor);
 
                     if (main_menu_delay_status == true)
                     {
@@ -436,6 +457,8 @@ int main()
                             temp_key = delay_print((main_menu.at(main_line)).get_title(), delay_temp);
                         }
                     }
+
+                    console_cursor.Y += temp_height_space;
                 }
             }
 
@@ -455,15 +478,15 @@ int main()
 
                 (sub_line_2 != sub_line) ? delay_temp = sub_menu_delay_duration : delay_temp = 0;
 
-                int temp{0};
+                int temp_size{0};
 
-                (max_sub_menu_display <= (main_menu.at(main_line)).get_content_number())
-                    ? temp = max_sub_menu_display
-                    : temp = (main_menu.at(main_line)).get_content_number();
+                (sub_menu_max_display <= (main_menu.at(main_line)).get_content_number())
+                    ? temp_size = sub_menu_max_display
+                    : temp_size = (main_menu.at(main_line)).get_content_number();
 
                 int temp_sub_line = sub_display_line;
 
-                for (size_t i{0}; i < temp; i++)
+                for (size_t i{0}; i < temp_size; i++)
                 {
                     console_cursor.Y += 2;
                     set_console_cursor(console_cursor);
@@ -491,7 +514,7 @@ int main()
                                  << string(mid_x_start - left_sub_x_start - (((main_menu.at(main_line)).get_content(temp_sub_line)).get_title()).length() - 5, ' ')
                                  << endl;
 
-                        if (i == temp - 1)
+                        if (i == temp_size - 1)
                         {
                             SetConsoleTextAttribute(color, 6);
                             set_console_cursor(temp_cord);
@@ -533,5 +556,11 @@ int main()
             display_chk = false;
         }
     }
+
+    main_menu.at(0).add_data_to_file();
+    main_menu.at(1).add_data_to_file();
+    main_menu.at(2).add_data_to_file();
+    main_menu.at(3).add_data_to_file();
+
     return 0;
 }

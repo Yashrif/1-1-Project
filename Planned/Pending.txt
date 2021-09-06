@@ -1,3 +1,1 @@
-1. highest 5 contents can be displayed at a time
-2. if contents > 5 then there'll be drop down option like thing
-3. add content option under main menu 
+1. add content option under main menu 
