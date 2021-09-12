@@ -28,13 +28,22 @@ void console_cursor_status(bool status)
     SetConsoleCursorInfo(out_handle, &cursor_info);
 }
 
-void console_size(int *x, int *y)
+void get_console_size(int &x, int &y)
 {
     CONSOLE_SCREEN_BUFFER_INFO cursor_buffer;
     GetConsoleScreenBufferInfo(out_handle, &cursor_buffer);
-    // cout << csbiInfo.dwSize.X << endl;
-    *x = cursor_buffer.srWindow.Right - cursor_buffer.srWindow.Left + 1;
-    *y = cursor_buffer.srWindow.Bottom - cursor_buffer.srWindow.Top + 1;
+    // x = cursor_buffer.dwSize.X ;
+    x = cursor_buffer.srWindow.Right - cursor_buffer.srWindow.Left + 1;
+    y = cursor_buffer.srWindow.Bottom - cursor_buffer.srWindow.Top + 1;
+}
+
+void set_console_size(int x, int y)
+{
+    HWND console = GetConsoleWindow();
+    RECT ConsoleRect;
+    GetWindowRect(console, &ConsoleRect);
+
+    MoveWindow(console, ConsoleRect.left, ConsoleRect.top, x, y, TRUE);
 }
 
 char delay_print(std::string title, int time_milliseconds)
@@ -119,5 +128,3 @@ void set_font_size(int width, int height, int weight)
     std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 }
-
-

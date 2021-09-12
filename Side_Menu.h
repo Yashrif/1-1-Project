@@ -6,7 +6,6 @@ using namespace std;
 class Side_Menu
 {
 private:
-    static int title_number;
     static int highest_length;
 
     std::string title;
@@ -20,7 +19,6 @@ public:
     {
         this->active_status = char(254);
         this->passive_status = char(251);
-        this->title_serial = ++this->title_number;
     }
     //Setters;
     bool set_title(const std::string title_value);
@@ -38,7 +36,6 @@ public:
     void toggle(); // For changing the current status
 };
 
-int Side_Menu::title_number{0};
 int Side_Menu::highest_length{0};
 
 //Setters

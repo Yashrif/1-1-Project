@@ -1,1 +1,1 @@
-1. add content option under main menu 
+take content section out of main & sub menu

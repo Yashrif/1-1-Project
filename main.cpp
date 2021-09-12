@@ -10,11 +10,10 @@ using namespace std;
 
 int main()
 {
-    set_font_size(9, 19.125, 600);
     HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
 
     int console_width{0}, console_height{0};
-    vector<Main_Menu> main_menu{0};
+    vector<Main_Menu> main_menu(4);
 
     /*-----------Titles-------*/
 
@@ -36,14 +35,10 @@ int main()
 
     /*-------------------Reading from file-------------*/
 
-    main_menu.push_back(Main_Menu());
-    main_menu.at(0).get_data_from_file("0");
-    main_menu.push_back(Main_Menu());
-    main_menu.at(1).get_data_from_file("Diary");
-    main_menu.push_back(Main_Menu());
-    main_menu.at(2).get_data_from_file("2");
-    main_menu.push_back(Main_Menu());
-    main_menu.at(3).get_data_from_file("Settings");
+    (main_menu.at(0)).get_data_from_file();
+    (main_menu.at(1)).get_data_from_file();
+    (main_menu.at(2)).get_data_from_file();
+    (main_menu.at(3)).get_data_from_file();
 
     // //temporary code---------------------------------- experimental purpose
     // {
@@ -74,8 +69,6 @@ int main()
     //     t8.add_content("nope");
 
     //     Main_Menu temp, temp2, temp3;
-    //     temp.set_title("To Do List");
-    //     main_menu.push_back(temp);
     //     (main_menu.at(0)).add_content(t1);
     //     (main_menu.at(0)).add_content(t2);
     //     (main_menu.at(0)).add_content(t3);
@@ -85,8 +78,6 @@ int main()
     //     (main_menu.at(0)).add_content(t7);
     //     (main_menu.at(0)).add_content(t8);
 
-    //     temp2.set_title("Diary");
-    //     main_menu.push_back(temp2);
     //     (main_menu.at(1)).add_content(t1);
     //     (main_menu.at(1)).add_content(t2);
     //     (main_menu.at(1)).add_content(t3);
@@ -94,15 +85,10 @@ int main()
     //     (main_menu.at(1)).add_content(t4);
     //     temp2.add_content(t2);
 
-    //     temp3.set_title("Reminders");
-    //     main_menu.push_back(temp3);
     //     (main_menu.at(2)).add_content(t2);
     //     (main_menu.at(2)).add_content(t3);
     //     (main_menu.at(2)).add_content(t4);
     //     (main_menu.at(2)).add_content(t4);
-
-    //     temp3.set_title("Settings");
-    //     main_menu.push_back(temp3);
     // }
 
     // main_menu.at(0).add_data_to_file();
@@ -138,16 +124,46 @@ int main()
 
     int delay_temp;
     bool display_chk{true};
-    COORD console_cursor{0, 0}, menu_cordinate{0, 0}, temp_cord{0};
-    console_cursor_status(false);
+    COORD console_cursor{0, 0}, temp_main_menu_cordinator{0, 0}, temp_cord{0}, temp_main_cord{0};
 
+    //Welcome Screen
+
+    set_console_size(480, 310);
+    get_console_size(console_width, console_height);
+    set_font_size(21, 44.125, 800);
+    console_cursor.X = (console_width * .43);
+    console_cursor.Y = (console_height * .45);
+    set_console_cursor(console_cursor);
+    SetConsoleTextAttribute(color, 11);
+    string temp_welcome{"Welcome"};
+    for (size_t i{0}; i < temp_welcome.length(); i++)
+    {
+        console_cursor_status(false);
+        cout << temp_welcome.at(i);
+        std::this_thread::sleep_for(std::chrono::milliseconds(175));
+    }
+    cout << " ";
+    std::this_thread::sleep_for(std::chrono::milliseconds(400));
+
+    for (size_t i{0}; i < temp_welcome.length(); i++)
+    {
+        cout << "\b\b ";
+        std::this_thread::sleep_for(std::chrono::milliseconds(175));
+    }
+
+    set_font_size(9, 19.125, 600);
+    console_width = 1100;
+    console_height = 650;
+    set_console_size(console_width, console_height);
+    console_width = 0;
+    console_height = 0;
+    console_cursor_status(false);
     while (1)
     {
         //Get Key
 
         key = '\0';
 
-        // if ((main_menu_status == true || sub_menu_status == true) && temp_key != '\0')
         if (temp_key != '\0')
         {
             key = temp_key;
@@ -157,14 +173,13 @@ int main()
         if (_kbhit())
             key = _getch();
 
-        /*--------------------------
-                Console Size
-        --------------------------*/
+        /*-------------------------------------
+                Console Size & Initialization
+        --------------------------------------*/
 
-        console_size(&console_width, &console_height);
+        get_console_size(console_width, console_height);
         if (console_width != console_width_temp || console_height != console_height_temp)
         {
-
             /*-------------Left Panel------------*/
 
             //Main Menu
@@ -195,15 +210,14 @@ int main()
             console_width_temp = console_width;
             console_height_temp = console_height;
 
-            display_chk = true;
-            main_menu_status = true;
-            main_menu_delay_status = true;
-            sub_menu_delay_status = true;
-            date_separator_display = true;
-
+            system("cls");
             console_cursor_status(false);
 
-            system("cls");
+            display_chk = true;
+            main_menu_status = true;
+            // main_menu_delay_status = true;
+            // sub_menu_delay_status = true;
+            date_separator_display = true;
         }
 
         //Down Arrow Key
@@ -319,7 +333,14 @@ int main()
             }
 
             else if (main_menu_status == true)
+            {
+                // main_menu.at(0).add_data_to_file();
+                // main_menu.at(1).add_data_to_file();
+                // main_menu.at(2).add_data_to_file();
+                // main_menu.at(3).add_data_to_file();
+
                 break;
+            }
         }
 
         /*----------------------
@@ -424,10 +445,11 @@ int main()
 
                     if (sub_menu_status == true && i == main_line)
                     {
-                        ((main_menu).at(i)).set_cordinator(console_cursor);
+                        temp_main_menu_cordinator = console_cursor;
                         console_cursor.Y += temp_size;
                     }
 
+                    temp_main_cord = console_cursor;
                     (main_line == i) ? SetConsoleTextAttribute(color, 12) : SetConsoleTextAttribute(color, 11);
 
                     if (main_menu_delay_status == true)
@@ -456,8 +478,26 @@ int main()
                             set_console_cursor(temp_cord);
                             temp_key = delay_print((main_menu.at(main_line)).get_title(), delay_temp);
                         }
+
+                        //Printing Main Menu Descrption
+
+                        if (sub_menu_status != true)
+                        {
+                            console_cursor.X = right_x_start + ((console_width - right_x_start) * .50) - (((main_menu).at(main_line)).get_description().length() / 2 + 1);
+                            console_cursor.Y = right_y_start + left_main_height * .35;
+
+                            set_console_cursor(console_cursor);
+                            SetConsoleTextAttribute(color, 15);
+
+                            cout << string(main_menu.at(main_line).get_highest_main_description_length() / 2, '\b')
+                                 << string(main_menu.at(main_line).get_highest_main_description_length() / 2, ' ')
+                                 << ((main_menu).at(main_line)).get_description()
+                                 << string(main_menu.at(main_line).get_highest_main_description_length() / 2, ' ')
+                                 << endl;
+                        }
                     }
 
+                    console_cursor = temp_main_cord;
                     console_cursor.Y += temp_height_space;
                 }
             }
@@ -473,7 +513,7 @@ int main()
 
                 main_menu_status == false; //Stoping Main Menu printing
 
-                console_cursor = ((main_menu).at(main_line)).get_cordinator();
+                console_cursor = temp_main_menu_cordinator;
                 console_cursor.X = (console_width * 5) / 100 + 4;
 
                 (sub_line_2 != sub_line) ? delay_temp = sub_menu_delay_duration : delay_temp = 0;
@@ -495,7 +535,15 @@ int main()
 
                     if (sub_menu_delay_status == true)
                     {
-                        char temp_char = delay_print(to_string(((main_menu.at(main_line)).get_content(temp_sub_line)).get_title_serial()) + ". " + ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title(), delay_temp);
+                        char temp_char{};
+                        if (i == 0)
+                        {
+                            SetConsoleTextAttribute(color, 8);
+                            cout << "   ";
+                            temp_char = delay_print(((main_menu.at(main_line)).get_content(temp_sub_line)).get_title(), delay_temp);
+                        }
+                        else
+                            temp_char = delay_print(to_string(((main_menu.at(main_line)).get_content(temp_sub_line)).get_title_serial()) + ". " + ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title(), delay_temp);
 
                         if (temp_char != '\0')
                         {
@@ -509,10 +557,21 @@ int main()
                         if (sub_line == temp_sub_line)
                             temp_cord = console_cursor;
                         else
-                            cout << ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title_serial()
-                                 << ". " << ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title()
-                                 << string(mid_x_start - left_sub_x_start - (((main_menu.at(main_line)).get_content(temp_sub_line)).get_title()).length() - 5, ' ')
-                                 << endl;
+                        {
+                            if (temp_sub_line == 0)
+                            {
+                                SetConsoleTextAttribute(color, 8);
+                                cout << "   "
+                                     << ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title()
+                                     << string(mid_x_start - left_sub_x_start - (((main_menu.at(main_line)).get_content(temp_sub_line)).get_title()).length() - 5, ' ')
+                                     << endl;
+                            }
+                            else
+                                cout << ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title_serial()
+                                     << ". " << ((main_menu.at(main_line)).get_content(temp_sub_line)).get_title()
+                                     << string(mid_x_start - left_sub_x_start - (((main_menu.at(main_line)).get_content(temp_sub_line)).get_title()).length() - 5, ' ')
+                                     << endl;
+                        }
 
                         if (i == temp_size - 1)
                         {
@@ -520,7 +579,11 @@ int main()
                             set_console_cursor(temp_cord);
                             cout << string(mid_x_start - left_sub_x_start, ' ');
                             set_console_cursor(temp_cord);
-                            temp_key = delay_print(to_string(((main_menu.at(main_line)).get_content(sub_line)).get_title_serial()) + ". " + ((main_menu.at(main_line)).get_content(sub_line)).get_title(), delay_temp);
+
+                            if (sub_line == 0)
+                                temp_key = delay_print("   " + ((main_menu.at(main_line)).get_content(sub_line)).get_title(), delay_temp);
+                            else
+                                temp_key = delay_print(to_string(((main_menu.at(main_line)).get_content(sub_line)).get_title_serial()) + ". " + ((main_menu.at(main_line)).get_content(sub_line)).get_title(), delay_temp);
                         }
                     }
 
@@ -556,11 +619,6 @@ int main()
             display_chk = false;
         }
     }
-
-    main_menu.at(0).add_data_to_file();
-    main_menu.at(1).add_data_to_file();
-    main_menu.at(2).add_data_to_file();
-    main_menu.at(3).add_data_to_file();
 
     return 0;
 }

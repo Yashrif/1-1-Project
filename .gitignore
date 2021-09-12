@@ -2,7 +2,6 @@
 .vscode/launch.json
 .vscode/tasks.json
 .vscode/settings.json
-main.exe
 A.exe
 main.txt
 .gitignore
