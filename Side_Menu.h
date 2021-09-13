@@ -13,12 +13,15 @@ private:
     char active_status, passive_status;
     std::vector<std::string> content;
 
+    std::string content_initialization{"Add something here"};
+
 public:
     friend class Main_Menu;
     Side_Menu()
     {
         this->active_status = char(254);
         this->passive_status = char(251);
+        this->content.push_back(content_initialization);
     }
     //Setters;
     bool set_title(const std::string title_value);
@@ -47,7 +50,10 @@ bool Side_Menu::set_title(const std::string title_value)
 }
 bool Side_Menu::add_content(const std::string content_value)
 {
-    content.push_back(content_value);
+    if (this->content.at(0) == content_initialization)
+        this->content.at(0) = content_value;
+    else
+        content.push_back(content_value);
 
     if ((content_value).length() > highest_length)
         highest_length = (content_value).length();

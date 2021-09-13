@@ -55,7 +55,7 @@ Main_Menu::Main_Menu()
         side_menu_temp.active_status = char(175);
         side_menu_temp.passive_status = char(175);
         side_menu_temp.title = side_menu_title.at((total_main_menu_constructed - 1) % 4);
-        side_menu_temp.content.push_back(side_menu_description.at((total_main_menu_constructed - 1) % 4));
+        side_menu_temp.content.at(0) = (side_menu_description.at((total_main_menu_constructed - 1) % 4));
         side_menu_temp.highest_length = (side_menu_description.at((total_main_menu_constructed - 1) % 4)).length();
 
         this->content.push_back(side_menu_temp);
@@ -175,7 +175,10 @@ bool Main_Menu::get_data_from_file()
             for (; content_size > 0; content_size--)
             {
                 getline(myfile, temp_str);
-                (side_temp.content).push_back(temp_str);
+                if (side_temp.content.at(0) == side_temp.content_initialization)
+                    (side_temp.content).at(0) = temp_str;
+                else
+                    (side_temp.content).push_back(temp_str);
             }
             (this->content).push_back(side_temp);
         }
