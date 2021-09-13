@@ -1,0 +1,1 @@
+take content section out of main & sub menu

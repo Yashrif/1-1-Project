@@ -1,83 +1,190 @@
 #pragma once
 #include <bits/stdc++.h>
-#include <windows.h>
-#include <conio.h>
 #include <fstream>
-#include <chrono>
 #include "Side_Menu.h"
-using namespace std;
+
 class Main_Menu
 {
 private:
-    char *title;
-    bool content_display_status;
-    COORD cordinator;
+    static int total_main_menu_constructed;
+
+    std::string title;
     std::vector<Side_Menu> content;
 
+    const vector<std::string> main_menu_title{"To Do List", "Diary", "Reminders", "Settings"};
+    const vector<std::string> main_menu_description{"Here see your tasks", "See your daily events", "See your reminders", "Personalize your settings"};
+    const vector<std::string> file_name{"to_do.dat", "diary.dat", "reminder.dat", "settings.dat"};
+    const vector<std::string> side_menu_title{"Add task", "Add event", "Add event"};
+    const vector<std::string> side_menu_description{"Add an task", "Add about your day", "Add an event that you want to be reminded"};
+
 public:
+    //Constructor
+    Main_Menu();
+    //Destructor
+    ~Main_Menu();
+
     //Setters
-    bool add_object(std::string title_value, int content_display_status_value);
-    bool add_user_data_to_file(Main_Menu *user);
+    bool set_title(const std::string title_value);
     bool add_content(const Side_Menu &content_value);
-    bool set_cordinator(COORD &cord);
-    bool set_content_display_status(int content_display_status_value);
+    bool add_data_to_file();
 
     //Getters
-    const char *get_title() const;
-    bool get_content_display_status(); // main panel-0+ , sub panel - same as main panel's content_display_status
-    COORD get_cordinator();
+    const std::string get_title() const;
+    const std::string get_description() const;
+    int get_content_number() const;
+    int get_highest_main_description_length() const;
+    COORD get_cordinator() const;
     Side_Menu get_content(int index_number) const;
-    Side_Menu *get_content_address(int index_number);
-    int get_content_number();
+    Side_Menu *const get_content_address(int index_number);
+    bool get_data_from_file();
 };
 
-//Setters
-bool Main_Menu::add_object(std::string title_value, int content_display_status_value)
+int Main_Menu::total_main_menu_constructed{0};
+
+//Constructor
+Main_Menu::Main_Menu()
 {
-    title = new char[title_value.length() + 1];
-    std::strcpy(title, title_value.c_str());
-    content_display_status = content_display_status_value;
+    total_main_menu_constructed++;
+
+    this->title = main_menu_title.at((total_main_menu_constructed - 1) % 4);
+    if ((total_main_menu_constructed - 1) % 4 != 3)
+    {
+
+        Side_Menu side_menu_temp;
+        side_menu_temp.title_serial = 0;
+        side_menu_temp.active_status = char(175);
+        side_menu_temp.passive_status = char(175);
+        side_menu_temp.title = side_menu_title.at((total_main_menu_constructed - 1) % 4);
+        side_menu_temp.content.at(0) = (side_menu_description.at((total_main_menu_constructed - 1) % 4));
+        side_menu_temp.highest_length = (side_menu_description.at((total_main_menu_constructed - 1) % 4)).length();
+
+        this->content.push_back(side_menu_temp);
+    }
+}
+
+//Destructor
+Main_Menu::~Main_Menu() {}
+
+//Setters
+bool Main_Menu::set_title(const std::string title_value)
+{
+    title = title_value;
 
     return true;
 }
 bool Main_Menu::add_content(const Side_Menu &content_value)
 {
-    content.push_back(content_value);
+    (this->content).push_back(content_value);
+    (this->content.at(this->content.size() - 1)).title_serial = this->content.size() - 1;
 
     return true;
 }
 
-bool Main_Menu::add_user_data_to_file(Main_Menu *user)
+bool Main_Menu::add_data_to_file()
 {
-    remove("user_details.dat");
+    int serial{0};
+    for (serial = 0; serial < main_menu_title.size(); serial++)
+        if (main_menu_title.at(serial) == this->title)
+            break;
+
+    remove(file_name.at(serial).c_str());
+
     fstream myfile;
-    myfile.open("user_details.dat", ios::app | ios::out | ios::binary);
+    myfile.open(file_name.at(serial).c_str(), ios::app | ios::out | ios::binary);
     if (myfile.is_open())
     {
-        myfile.write(reinterpret_cast<char *>(user), sizeof(*user));
+        this->content.size() > 0 ? myfile << this->content.size() - 1 << endl : myfile << this->content.size() << endl;
+
+        for (Side_Menu temp : this->content)
+        {
+            if (temp.title_serial != 0)
+            {
+                myfile << temp.highest_length << endl;
+                myfile << temp.title << endl;
+                myfile << temp.title_serial << endl;
+                myfile << temp.active_status << endl;
+                myfile << temp.passive_status << endl;
+                myfile << temp.content.size() << endl;
+                for (size_t i{0}; i < temp.get_content_size(); i++)
+                    myfile << temp.content.at(i) << endl;
+            }
+        }
         myfile.close();
     }
-
-    return true;
-}
-bool Main_Menu::set_cordinator(COORD &cord)
-{
-    cordinator = cord;
-
-    return 1;
-}
-bool Main_Menu::set_content_display_status(int content_display_status_value)
-{
-    content_display_status = content_display_status_value;
 
     return true;
 }
 
 //Getters
 
-const char *Main_Menu::get_title() const { return title; }
-bool Main_Menu::get_content_display_status() { return content_display_status; }
-COORD Main_Menu::get_cordinator() { return cordinator; }
+const std::string Main_Menu::get_title() const { return title; }
+const std::string Main_Menu::get_description() const
+{
+
+    int serial{0};
+    for (serial = 0; serial < main_menu_title.size(); serial++)
+        if (main_menu_title.at(serial) == this->title)
+            break;
+    return main_menu_description.at(serial);
+}
+int Main_Menu::get_content_number() const { return content.size(); }
+int Main_Menu::get_highest_main_description_length() const
+{
+    int temp_length{0};
+    for (auto str : main_menu_description)
+        if (str.length() > temp_length)
+            temp_length = str.length();
+
+    return temp_length;
+}
 Side_Menu Main_Menu::get_content(int index_number) const { return content.at(index_number); }
-int Main_Menu::get_content_number() { return content.size(); }
-Side_Menu *Main_Menu::get_content_address(int index_number) { return &content.at(index_number); }
+Side_Menu *const Main_Menu::get_content_address(int index_number) { return &content.at(index_number); }
+bool Main_Menu::get_data_from_file()
+{
+    static int get_data_method_called{0};
+    int serial = (get_data_method_called++ % 4);
+
+    fstream myfile;
+    myfile.open(file_name.at(serial).c_str(), ios::in | ios::binary | ios::app);
+    myfile.seekg(0);
+
+    int temp_size, content_size;
+    std::string temp_str;
+
+    myfile >> temp_size;
+    if (temp_size > 0)
+    {
+        for (; temp_size > 0; temp_size--)
+        {
+            Side_Menu side_temp;
+
+            myfile >> side_temp.highest_length;
+
+            myfile.ignore();
+            getline(myfile, side_temp.title);
+
+            myfile >> side_temp.title_serial;
+
+            myfile >> side_temp.active_status;
+
+            myfile >> side_temp.passive_status;
+
+            myfile >> content_size;
+
+            myfile.ignore();
+            for (; content_size > 0; content_size--)
+            {
+                getline(myfile, temp_str);
+                if (side_temp.content.at(0) == side_temp.content_initialization)
+                    (side_temp.content).at(0) = temp_str;
+                else
+                    (side_temp.content).push_back(temp_str);
+            }
+            (this->content).push_back(side_temp);
+        }
+    }
+
+    myfile.close();
+
+    return true;
+}
