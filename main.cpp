@@ -114,7 +114,16 @@ int main()
     /*-------------Sub Menu-------------*/
 
     int sub_line{-1}, sub_line_2{0}, sub_display_line{0};
-    bool sub_menu_status{false}, sub_menu_delay_status{true}, sub_menu_add_content_status{false};
+    bool sub_menu_status{false}, sub_menu_delay_status{true}, sub_menu_add_todo_status{false}, sub_menu_add_diary_status{false}, sub_menu_add_reminder_status{false};
+    int sub_menu_adding_status{0};
+    COORD sub_menu_add_content_cord{0}, sub_menu_add_content_cord_2{0};
+    string sub_menu_string;
+    Side_Menu temp_side_menu_content_adding;
+    char content_key{'\0'};
+    bool space_print{true};
+    size_t sub_menu_time_now{0};
+
+    // bool sub_menu_todo_title_setter_status{false}, sub_menu_todo_content_setter_status{false}, sub_menu_diary_title_setter_status{false}, sub_menu_diary_contetnt_setter_status { false };
 
     /*-------------Clock, Date & Mid Panel-------------*/
 
@@ -130,28 +139,28 @@ int main()
 
     //Welcome Screen
 
-    set_console_size(405, 270);
-    get_console_size(console_width, console_height);
-    set_font_size(21, 44.125, 800);
-    console_cursor.X = (console_width * .43);
-    console_cursor.Y = (console_height * .45);
-    set_console_cursor(console_cursor);
-    SetConsoleTextAttribute(color, 11);
-    string temp_welcome{"Welcome"};
-    for (size_t i{0}; i < temp_welcome.length(); i++)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        console_cursor_status(false);
-        cout << temp_welcome.at(i);
-    }
-    cout << " ";
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    // set_console_size(405, 270);
+    // get_console_size(console_width, console_height);
+    // set_font_size(21, 44.125, 800);
+    // console_cursor.X = (console_width * .43);
+    // console_cursor.Y = (console_height * .45);
+    // set_console_cursor(console_cursor);
+    // SetConsoleTextAttribute(color, 11);
+    // string temp_welcome{"Welcome"};
+    // for (size_t i{0}; i < temp_welcome.length(); i++)
+    // {
+    //     std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    //     console_cursor_status(false);
+    //     cout << temp_welcome.at(i);
+    // }
+    // cout << " ";
+    // std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-    for (size_t i{0}; i < temp_welcome.length(); i++)
-    {
-        cout << "\b\b ";
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
+    // for (size_t i{0}; i < temp_welcome.length(); i++)
+    // {
+    //     cout << "\b\b ";
+    //     std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    // }
 
     set_font_size(9, 19.125, 600);
     console_width = 1100;
@@ -231,10 +240,10 @@ int main()
 
             down_arrow_key_sub_menu:
 
-                if (sub_menu_add_content_status == true)
+                if (sub_menu_add_todo_status == true || sub_menu_add_reminder_status == true)
                 {
-                    sub_line = (main_menu.at(main_line)).get_content_number() - 1;
-                    sub_menu_add_content_status = false;
+                    sub_menu_add_todo_status = false;
+                    sub_menu_add_reminder_status = false;
                 }
                 else
                     sub_line++;
@@ -286,7 +295,7 @@ int main()
                         sub_display_line = 0;
                 }
 
-                main_menu_status = true;
+                // main_menu_status = true;
             }
 
             else if (main_menu_status == true)
@@ -305,10 +314,22 @@ int main()
         {
             if (sub_menu_status == true)
             {
-                if (sub_line == 0)
-                    sub_menu_add_content_status = true;
-                else
+                switch (sub_line)
+                {
+                case 0:
+                    sub_menu_add_todo_status = true;
+                    break;
+                case 1:
+                    sub_menu_add_reminder_status = true;
+                    break;
+                case 2:
+                    sub_menu_add_diary_status = true;
+                    break;
+
+                default:
                     (((main_menu).at(main_line)).get_content_address(sub_line))->toggle(); //toggle the status
+                    break;
+                }
                 display_chk = true;
             }
             else if (main_menu_status == true)
@@ -347,10 +368,10 @@ int main()
 
             else if (main_menu_status == true)
             {
-                main_menu.at(0).add_data_to_file();
-                main_menu.at(1).add_data_to_file();
-                main_menu.at(2).add_data_to_file();
-                main_menu.at(3).add_data_to_file();
+                // main_menu.at(0).add_data_to_file();
+                // main_menu.at(1).add_data_to_file();
+                // main_menu.at(2).add_data_to_file();
+                // main_menu.at(3).add_data_to_file();
 
                 break;
             }
@@ -359,17 +380,45 @@ int main()
         /*----------------------
                 Clock
         ----------------------*/
+
+    clock_display_status:
+        console_cursor_status(false);
+
         get_local_time(time_now);
         if (time_now.tm_min != time_now_min)
         {
             time_update = true;
-            goto time_print;
+            goto display_clock;
 
-        get_time:
+        update_clock_values:
 
             time_update = false;
             time_now_min = time_now.tm_min;
         }
+        switch (sub_menu_adding_status)
+        {
+        case 1:
+            sub_menu_adding_status = 0;
+            goto to_do_title_setter;
+            break;
+        case 2:
+            sub_menu_adding_status = 0;
+            goto to_do_content_setter;
+            break;
+            // case 1:
+            //     goto to_do_title_setter;
+            //     break;
+            // case 1:
+            //     goto to_do_title_setter;
+            //     break;
+
+        default:
+            break;
+        }
+
+        /*--------------------------
+                Display Status
+         --------------------------*/
 
         if (display_chk == true)
         {
@@ -382,7 +431,7 @@ int main()
 
                 /*---------------- Clock over Mid Panel---------------*/
 
-            time_print:
+            display_clock:
 
                 string time_str;
                 get_time_now(time_str); //geting time now
@@ -393,7 +442,7 @@ int main()
                 cout << time_str;
 
                 if (time_update == true)
-                    goto get_time;
+                    goto update_clock_values;
 
                 get_date_now(time_str); //getting date now
                 console_cursor.X = clock_x_start - (time_str.length() / 2);
@@ -586,15 +635,27 @@ int main()
 
                         if (i == temp_size - 1)
                         {
-                            // // cout << endl;
-                            // cout << (((main_menu).at(main_line)).get_content(sub_line)).get_active_status() << "yes" << endl;
-                            // cout << (((main_menu).at(main_line)).get_content(sub_line)).get_active_status() << "yes" << endl;
-
                             //Printing Sub Menu Content
 
                             console_cursor.X = (console_width * 45) / 100;
 
-                            for (size_t j{0}; j < (((main_menu).at(main_line)).get_content(temp_sub_line)).get_content_size(); j++)
+                            int temp_highest_content_number =
+                                ((((main_menu).at(main_line)).get_content(sub_line - 1 < 0 ? ((main_menu).at(main_line)).get_content_number() + sub_line - 1 : sub_line - 1)).get_content_size() >
+                                 (((main_menu).at(main_line)).get_content(sub_line + 1 >= ((main_menu).at(main_line)).get_content_number() ? 0 : sub_line + 1)).get_content_size())
+                                    ? ((main_menu).at(main_line)).get_content(sub_line - 1 < 0 ? ((main_menu).at(main_line)).get_content_number() + sub_line - 1 : sub_line - 1).get_content_size()
+                                    : ((main_menu).at(main_line)).get_content(sub_line + 1 >= ((main_menu).at(main_line)).get_content_number() ? 0 : sub_line + 1).get_content_size();
+
+                            for (size_t j{0}; j <= temp_highest_content_number; j++)
+                            {
+                                console_cursor.Y = right_y_start + (2 * j);
+
+                                set_console_cursor(console_cursor);
+                                cout << string(console_width - right_x_start, ' ') << endl;
+                            }
+
+                            console_cursor.X = (console_width * 45) / 100;
+
+                            for (size_t j{0}; j < (((main_menu).at(main_line)).get_content(sub_line)).get_content_size(); j++)
                             {
                                 console_cursor.Y = right_y_start + (2 * j);
                                 set_console_cursor(console_cursor);
@@ -604,8 +665,7 @@ int main()
                                     : SetConsoleTextAttribute(color, 15);
 
                                 cout << (((main_menu).at(main_line)).get_content(sub_line)).get_active_status()
-                                     << ' ' << (((main_menu).at(main_line)).get_content(sub_line)).get_content(j)
-                                     << string((((main_menu).at(main_line)).get_content(sub_line)).get_highest_length() - ((((main_menu).at(main_line)).get_content(temp_sub_line)).get_content(j)).length(), ' ') << endl;
+                                     << ' ' << (((main_menu).at(main_line)).get_content(sub_line)).get_content(j);
                             }
 
                             //Delay Printing Sub Menu
@@ -623,8 +683,10 @@ int main()
                     }
 
                     console_cursor = cord;
-                    if (++temp_sub_line >= (main_menu.at(main_line)).get_content_number())
+                    if (temp_sub_line >= (main_menu.at(main_line)).get_content_number())
                         temp_sub_line = 0;
+                    else
+                        temp_sub_line++;
                 }
                 sub_line_2 = sub_line;
                 sub_menu_delay_status = false;
@@ -633,54 +695,169 @@ int main()
                     goto exit_sub_menu;
             }
 
-            display_chk = false;
+            /*----------------------------------
+            *   Add Content to To Do List
+            *----------------------------------*/
 
-            if (sub_menu_add_content_status == true)
+            if (sub_menu_add_todo_status == true)
+
             {
-                string str;
-                Side_Menu temp;
+                sub_menu_time_now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-                console_cursor = temp_main_menu_cordinator;
-                console_cursor.X = (console_width * 5) / 100 + 4;
-                console_cursor.Y += 2;
-                set_console_cursor(console_cursor);
+                sub_menu_add_content_cord = temp_main_menu_cordinator;
+                sub_menu_add_content_cord.X = (console_width * 5) / 100 + 4;
+                sub_menu_add_content_cord.Y += 2;
+                set_console_cursor(sub_menu_add_content_cord);
                 cout << string(mid_x_start - left_sub_x_start, ' ');
 
-                console_cursor = temp_main_menu_cordinator;
-                console_cursor.X = (console_width * 5) / 100 + 4 + 3;
-                console_cursor.Y += 2;
-                set_console_cursor(console_cursor);
-                SetConsoleTextAttribute(color, 15);
+                sub_menu_add_content_cord.X += 3;
+                set_console_cursor(sub_menu_add_content_cord);
+
                 console_cursor_status(true);
-                getline(cin, str);
+                set_console_cursor(sub_menu_add_content_cord);
+                sub_menu_add_content_cord_2 = sub_menu_add_content_cord;
 
-                console_cursor = temp_main_menu_cordinator;
-                console_cursor.X = (console_width * 5) / 100 + 4 + 3;
-                console_cursor.Y += 2;
-                set_console_cursor(console_cursor);
-                SetConsoleTextAttribute(color, 12);
-                cout << str << endl;
-                temp.set_title(str);
-
-                console_cursor.X = (console_width * 45) / 100;
-                console_cursor.Y = right_y_start;
-                set_console_cursor(console_cursor);
                 SetConsoleTextAttribute(color, 15);
-                cout << char(254) << string(((main_menu.at(main_line)).get_content(0)).get_content(0).length() + 2, ' ') << endl;
-                console_cursor.X = (console_width * 45) / 100 + 3;
-                console_cursor.Y = right_y_start;
-                set_console_cursor(console_cursor);
-                getline(cin, str);
-                console_cursor_status(false);
-                temp.add_content(str);
 
-                (main_menu.at(main_line)).add_content(temp);
+                {
+                    sub_menu_string.clear();
+
+                    while (1)
+                    {
+                        sub_menu_adding_status = 1;
+                        goto clock_display_status;
+
+                    to_do_title_setter:
+
+                        SetConsoleTextAttribute(color, 15);
+                        set_console_cursor(sub_menu_add_content_cord_2);
+                        if ((std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - sub_menu_time_now) % 1000 >= 500)
+                            // cout << char(222);
+                            cout << "|";
+                        else
+                            cout << " ";
+
+                        content_key = '\0';
+
+                        if (_kbhit())
+                        {
+                            content_key = _getch();
+                            if (content_key >= 32 && content_key <= 126)
+                            {
+                                sub_menu_string += content_key;
+                                set_console_cursor(sub_menu_add_content_cord);
+                                cout << sub_menu_string;
+
+                                get_console_cursor(sub_menu_add_content_cord_2);
+                            }
+                            else if (content_key == 13 || content_key == 27)
+                                break;
+                        }
+                    }
+                }
+
+                //If enter key if pressed
+
+                if (content_key == 13)
+                {
+                    set_console_cursor(sub_menu_add_content_cord);
+                    SetConsoleTextAttribute(color, 12);
+                    cout << sub_menu_string + ' ' << endl;
+
+                    temp_side_menu_content_adding.set_title(sub_menu_string);
+
+                    sub_menu_add_content_cord.X = (console_width * 45) / 100;
+                    sub_menu_add_content_cord.Y = right_y_start;
+                    set_console_cursor(sub_menu_add_content_cord);
+
+                    cout << string(console_width - right_x_start, ' ') << endl;
+
+                    set_console_cursor(sub_menu_add_content_cord);
+                    sub_menu_add_content_cord_2 = sub_menu_add_content_cord;
+                    SetConsoleTextAttribute(color, 15);
+
+                    {
+                        sub_menu_string.clear();
+
+                        while (1)
+                        {
+                            sub_menu_adding_status = 2;
+                            goto clock_display_status;
+
+                        to_do_content_setter:
+
+                            SetConsoleTextAttribute(color, 15);
+                            set_console_cursor(sub_menu_add_content_cord_2);
+                            if ((std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - sub_menu_time_now) % 1000 >= 500)
+                                cout << "|";
+                            else
+                                cout << " ";
+
+                            if (space_print)
+                            {
+                                set_console_cursor(sub_menu_add_content_cord);
+                                cout << string(console_width - right_x_start, ' ');
+                                set_console_cursor(sub_menu_add_content_cord);
+                                cout << temp_side_menu_content_adding.get_active_status() << " ";
+                                get_console_cursor(sub_menu_add_content_cord_2);
+                                space_print = false;
+                            }
+
+                            content_key = '\0';
+
+                            if (_kbhit())
+                            {
+                                content_key = _getch();
+                                if (content_key >= 32 && content_key <= 126)
+                                {
+                                    sub_menu_string += content_key;
+                                    set_console_cursor(sub_menu_add_content_cord);
+                                    cout << temp_side_menu_content_adding.get_active_status() << " " << sub_menu_string;
+                                    get_console_cursor(sub_menu_add_content_cord_2);
+                                }
+                                else if (content_key == 13 && sub_menu_string.length() > 0)
+                                {
+                                    cout << "\b ";
+                                    space_print = true;
+                                    sub_menu_add_content_cord.Y += 2;
+                                    temp_side_menu_content_adding.add_content(sub_menu_string);
+                                    sub_menu_string.clear();
+
+                                    sub_menu_add_content_cord_2 = sub_menu_add_content_cord;
+                                }
+
+                                else if (content_key == 8)
+                                {
+                                    sub_menu_string.erase(sub_menu_string.begin() + sub_menu_string.length() - 1);
+                                    cout << "\b\b  \b\b";
+                                    get_console_cursor(sub_menu_add_content_cord_2);
+                                }
+
+                                else if (content_key == 27)
+                                {
+                                    set_console_cursor(sub_menu_add_content_cord);
+                                    cout << string(console_width - right_x_start, ' ');
+                                    space_print = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    (main_menu.at(main_line)).add_content(temp_side_menu_content_adding);
+                    sub_line = (main_menu.at(main_line)).get_content_number() - 1;
+                }
+                else
+                    sub_line = 0;
+
+                console_cursor_status(false);
 
                 display_chk = true;
                 key = '\0';
 
                 goto down_arrow_key_sub_menu;
             }
+
+            display_chk = false;
         }
     }
 
