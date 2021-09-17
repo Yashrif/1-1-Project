@@ -6,7 +6,6 @@ using namespace std;
 class Side_Menu
 {
 private:
-    static int highest_length;
 
     std::string title;
     int title_serial;
@@ -32,14 +31,11 @@ public:
     const std::string get_content(int index_number) const;
     const int get_title_serial();
     const int get_content_size();
-    const int get_highest_length();
     const char get_active_status();
 
     //methods
     void toggle(); // For changing the current status
 };
-
-int Side_Menu::highest_length{0};
 
 //Setters
 bool Side_Menu::set_title(const std::string title_value)
@@ -55,9 +51,6 @@ bool Side_Menu::add_content(const std::string content_value)
     else
         content.push_back(content_value);
 
-    if ((content_value).length() > highest_length)
-        highest_length = (content_value).length();
-
     return true;
 }
 
@@ -67,7 +60,6 @@ const std::string Side_Menu::get_title() const { return title; }
 const std::string Side_Menu::get_content(int index_number) const { return content.at(index_number); }
 const int Side_Menu::get_title_serial() { return title_serial; }
 const int Side_Menu::get_content_size() { return content.size(); }
-const int Side_Menu::get_highest_length() { return highest_length; }
 const char Side_Menu::get_active_status() { return this->active_status; }
 
 //methods

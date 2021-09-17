@@ -1,1 +1,2 @@
-take content section out of main & sub menu
+add an option to go through sub menu contents
+sub menu toggle issue
