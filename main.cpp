@@ -139,28 +139,28 @@ int main()
 
     //Welcome Screen
 
-    // set_console_size(405, 270);
-    // get_console_size(console_width, console_height);
-    // set_font_size(21, 44.125, 800);
-    // console_cursor.X = (console_width * .43);
-    // console_cursor.Y = (console_height * .45);
-    // set_console_cursor(console_cursor);
-    // SetConsoleTextAttribute(color, 11);
-    // string temp_welcome{"Welcome"};
-    // for (size_t i{0}; i < temp_welcome.length(); i++)
-    // {
-    //     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    //     console_cursor_status(false);
-    //     cout << temp_welcome.at(i);
-    // }
-    // cout << " ";
-    // std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    set_console_size(405, 270);
+    get_console_size(console_width, console_height);
+    set_font_size(21, 44.125, 800);
+    console_cursor.X = (console_width * .43);
+    console_cursor.Y = (console_height * .45);
+    set_console_cursor(console_cursor);
+    SetConsoleTextAttribute(color, 11);
+    string temp_welcome{"Welcome"};
+    for (size_t i{0}; i < temp_welcome.length(); i++)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        console_cursor_status(false);
+        cout << temp_welcome.at(i);
+    }
+    cout << " ";
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-    // for (size_t i{0}; i < temp_welcome.length(); i++)
-    // {
-    //     cout << "\b\b ";
-    //     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    // }
+    for (size_t i{0}; i < temp_welcome.length(); i++)
+    {
+        cout << "\b\b ";
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
 
     set_font_size(9, 19.125, 600);
     console_width = 1100;
@@ -368,10 +368,10 @@ int main()
 
             else if (main_menu_status == true)
             {
-                // main_menu.at(0).add_data_to_file();
-                // main_menu.at(1).add_data_to_file();
-                // main_menu.at(2).add_data_to_file();
-                // main_menu.at(3).add_data_to_file();
+                main_menu.at(0).add_data_to_file();
+                main_menu.at(1).add_data_to_file();
+                main_menu.at(2).add_data_to_file();
+                main_menu.at(3).add_data_to_file();
 
                 break;
             }
