@@ -150,13 +150,14 @@ bool Main_Menu::get_data_from_file()
     std::string temp_str;
 
     myfile >> temp_size;
+
+    myfile.ignore();
     if (temp_size > 0)
     {
         for (; temp_size > 0; temp_size--)
         {
             Side_Menu side_temp;
 
-            myfile.ignore();
             getline(myfile, side_temp.title);
 
             myfile >> side_temp.title_serial;

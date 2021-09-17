@@ -367,22 +367,27 @@ int main()
         {
             if (sub_menu_status == true)
             {
-                switch (sub_line)
+                if (sub_line == 0)
                 {
-                case 0:
-                    sub_menu_add_todo_status = true;
-                    break;
-                case 1:
-                    sub_menu_add_reminder_status = true;
-                    break;
-                case 2:
-                    sub_menu_add_diary_status = true;
-                    break;
+                    switch (main_line)
+                    {
+                    case 0:
+                        sub_menu_add_todo_status = true;
+                        break;
+                    case 1:
+                        sub_menu_add_reminder_status = true;
+                        break;
+                    case 2:
+                        sub_menu_add_diary_status = true;
+                        break;
 
-                default:
-                    (((main_menu).at(main_line)).get_content_address(sub_line))->toggle(); //toggle the status
-                    break;
+                    default:
+                        break;
+                    }
                 }
+                else
+                    (((main_menu).at(main_line)).get_content_address(sub_line))->toggle(); //toggle the status
+
                 display_chk = true;
             }
             else if (main_menu_status == true)
