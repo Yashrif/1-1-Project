@@ -159,7 +159,7 @@ int main()
     for (size_t i{0}; i < temp_welcome.length(); i++)
     {
         cout << "\b\b ";
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(80));
     }
 
     set_font_size(9, 19.125, 600);
@@ -748,6 +748,12 @@ int main()
                                 set_console_cursor(sub_menu_add_content_cord);
                                 cout << sub_menu_string;
 
+                                get_console_cursor(sub_menu_add_content_cord_2);
+                            }
+                            else if (content_key == 8 && sub_menu_string.length() > 0)
+                            {
+                                sub_menu_string.erase(sub_menu_string.begin() + sub_menu_string.length() - 1);
+                                cout << "\b\b  \b\b";
                                 get_console_cursor(sub_menu_add_content_cord_2);
                             }
                             else if (content_key == 13 || content_key == 27)
