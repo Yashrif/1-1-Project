@@ -152,7 +152,7 @@ int main()
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         console_cursor_status(false);
-        cout << temp_welcome.at(i);
+        cout <<'\b' << temp_welcome.at(i)<<'_';
     }
     cout << " ";
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
