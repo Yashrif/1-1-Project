@@ -146,21 +146,26 @@ int main()
     console_cursor.X = (console_width * .43);
     console_cursor.Y = (console_height * .45);
     set_console_cursor(console_cursor);
-    SetConsoleTextAttribute(color, 11);
     string temp_welcome{"Welcome"};
     for (size_t i{0}; i < temp_welcome.length(); i++)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
         console_cursor_status(false);
-        cout <<'\b' << temp_welcome.at(i)<<'_';
+
+        SetConsoleTextAttribute(color, 11);
+        cout << "\b\b" << temp_welcome.at(i) << " ";
+
+        SetConsoleTextAttribute(color, 8);
+        // cout << char(175);
+        cout << ">";
     }
     cout << " ";
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
     for (size_t i{0}; i < temp_welcome.length(); i++)
     {
-        cout << "\b\b ";
-        std::this_thread::sleep_for(std::chrono::milliseconds(80));
+        cout << "\b\b\b\b " << char(174) << " ";
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 
     set_font_size(9, 19.125, 600);
@@ -170,6 +175,7 @@ int main()
     console_width = 0;
     console_height = 0;
     console_cursor_status(false);
+
     while (1)
     {
         //Get Key
