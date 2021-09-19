@@ -15,10 +15,15 @@ int main()
     int console_width{0}, console_height{0};
     vector<Main_Menu> main_menu(4);
 
-    /*-----------Titles-------*/
+    /*---------------------------------------------------------------------------------*
+    *-------------------------------------Declarations---------------------------------*
+    *---------------------------------------------------------------------------------*/
+
+    /*-----------Menus-------*/
 
     //Left Panel
-    int left_main_x_start{0}, left_main_y_start{0}, left_main_height, left_sub_x_start{0}, left_sub_y_start{0};
+    int left_main_x_start{0},
+        left_main_y_start{0}, left_main_height, left_sub_x_start{0}, left_sub_y_start{0};
 
     //Mid Panel
     int mid_x_start{0}, mid_y_start{0}, mid_y_end{0}, mid_y;
@@ -33,12 +38,58 @@ int main()
 
     const int main_menu_delay_duration{300}, sub_menu_delay_duration{250}, sub_menu_max_display{5};
 
-    /*-------------------Reading from file-------------*/
+    /*-------------Key-------------*/
 
-    (main_menu.at(0)).get_data_from_file();
-    (main_menu.at(1)).get_data_from_file();
-    (main_menu.at(2)).get_data_from_file();
-    (main_menu.at(3)).get_data_from_file();
+    char key, temp_key{'\0'};
+
+    /*-------------Console-------------*/
+
+    int console_width_temp, console_height_temp;
+    bool console_size_changed{false};
+
+    /*-------------Main Menu-------------*/
+
+    int main_line{-1}, main_line_2{0};
+    bool main_menu_status{true}, main_menu_delay_status{true};
+
+    /*-------------Sub Menu-------------*/
+
+    int sub_line{-1}, sub_line_2{0}, sub_display_line{0};
+    bool sub_menu_status{false}, sub_menu_delay_status{true}, sub_menu_add_todo_status{false}, sub_menu_add_diary_status{false}, sub_menu_add_reminder_status{false};
+    int sub_menu_adding_status{0}, sub_menu_content_being_added{0};
+    COORD sub_menu_add_content_cord{0}, sub_menu_add_content_cord_2{0};
+    string sub_menu_string;
+    Side_Menu temp_side_menu_content_adding;
+    char content_key{'\0'};
+    bool sub_menu_string_print{false};
+    size_t sub_menu_time_now{0};
+
+    // bool sub_menu_todo_title_setter_status{false}, sub_menu_todo_content_setter_status{false}, sub_menu_diary_title_setter_status{false}, sub_menu_diary_contetnt_setter_status { false };
+
+    /*-------------Clock, Date & Mid Panel-------------*/
+
+    bool date_separator_display{true}, time_update{false};
+    struct tm time_now;
+    int time_now_min{0};
+
+    /*-------------Welcome Screen-------------*/
+
+    size_t welcome_printing_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    const int welcome_printing_duration{1000};
+    int temp_welcome_printing_duration{0};
+    string welcome_text{"Welcome"};
+
+    /*-------------Others-------------*/
+
+    int delay_temp;
+    bool display_chk{true};
+    COORD console_cursor{0, 0}, temp_main_menu_cordinator{0, 0}, temp_cord{0}, temp_main_cord{0};
+
+    /*---------------------------------------------------------------------------------*
+    *---------------------------------------Methods------------------------------------*
+    *---------------------------------------------------------------------------------*/
+
+    /*-------------------Writing to file for exterimental purposes-------------*/
 
     // //temporary code---------------------------------- experimental purpose
     // {
@@ -98,62 +149,32 @@ int main()
 
     // std::this_thread::sleep_for(std::chrono::seconds(5));
 
-    /*-------------Key-------------*/
+    /*-------------------Reading from file-------------*/
 
-    char key, temp_key{'\0'};
-
-    /*-------------Console-------------*/
-
-    int console_width_temp, console_height_temp;
-    bool console_size_changed{false};
-
-    /*-------------Main Menu-------------*/
-
-    int main_line{-1}, main_line_2{0};
-    bool main_menu_status{true}, main_menu_delay_status{true};
-
-    /*-------------Sub Menu-------------*/
-
-    int sub_line{-1}, sub_line_2{0}, sub_display_line{0};
-    bool sub_menu_status{false}, sub_menu_delay_status{true}, sub_menu_add_todo_status{false}, sub_menu_add_diary_status{false}, sub_menu_add_reminder_status{false};
-    int sub_menu_adding_status{0}, sub_menu_content_being_added{0};
-    COORD sub_menu_add_content_cord{0}, sub_menu_add_content_cord_2{0};
-    string sub_menu_string;
-    Side_Menu temp_side_menu_content_adding;
-    char content_key{'\0'};
-    bool sub_menu_string_print{false};
-    size_t sub_menu_time_now{0};
-
-    // bool sub_menu_todo_title_setter_status{false}, sub_menu_todo_content_setter_status{false}, sub_menu_diary_title_setter_status{false}, sub_menu_diary_contetnt_setter_status { false };
-
-    /*-------------Clock, Date & Mid Panel-------------*/
-
-    bool date_separator_display{true}, time_update{false};
-    struct tm time_now;
-    int time_now_min{0};
-
-    /*-------------Others-------------*/
-
-    int delay_temp;
-    bool display_chk{true};
-    COORD console_cursor{0, 0}, temp_main_menu_cordinator{0, 0}, temp_cord{0}, temp_main_cord{0};
+    (main_menu.at(0)).get_data_from_file();
+    (main_menu.at(1)).get_data_from_file();
+    (main_menu.at(2)).get_data_from_file();
+    (main_menu.at(3)).get_data_from_file();
 
     /*-------------Welcome Screen-------------*/
 
     set_console_size(405, 270);
     get_console_size(console_width, console_height);
     set_font_size(21, 44.125, 800);
+
     console_cursor.X = (console_width * .43);
     console_cursor.Y = (console_height * .45);
     set_console_cursor(console_cursor);
-    string temp_welcome{"Welcome"};
-    for (size_t i{0}; i < temp_welcome.length(); i++)
+
+    temp_welcome_printing_duration = (welcome_printing_duration - std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() + welcome_printing_start) / welcome_text.length();
+
+    for (size_t i{0}; i < welcome_text.length(); i++)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(temp_welcome_printing_duration));
         console_cursor_status(false);
 
         SetConsoleTextAttribute(color, 11);
-        cout << "\b\b" << temp_welcome.at(i) << " ";
+        cout << "\b\b" << welcome_text.at(i) << " ";
 
         SetConsoleTextAttribute(color, 8);
         // cout << char(175);
@@ -162,11 +183,15 @@ int main()
     cout << " ";
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-    for (size_t i{0}; i < temp_welcome.length(); i++)
+    for (size_t i{0}; i < welcome_text.length(); i++)
     {
-        cout << "\b\b\b\b " << char(174) << " ";
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        cout << "\b\b\b\b "
+             << "<"
+             << " ";
+        std::this_thread::sleep_for(std::chrono::milliseconds(temp_welcome_printing_duration * 7 / 10));
     }
+
+    /*-------------Main Interface Initialization-------------*/
 
     set_font_size(9, 19.125, 600);
     console_width = 1100;
@@ -175,6 +200,8 @@ int main()
     console_width = 0;
     console_height = 0;
     console_cursor_status(false);
+
+    /*------------------Odyssey--------------*/
 
     while (1)
     {
@@ -203,6 +230,13 @@ int main()
 
         if (console_width != console_width_temp || console_height != console_height_temp)
         {
+
+            if (console_width < 87 || console_height < 27)
+            {
+                set_console_size(870, 570);
+                get_console_size(console_width, console_height);
+            }
+
             console_size_changed = true;
             sub_menu_string_print = true;
 
@@ -242,8 +276,8 @@ int main()
             display_chk = true;
             main_menu_status = true;
             // sub_menu_status = true;
-            // main_menu_delay_status = true;
-            // sub_menu_delay_status = true;
+            main_menu_delay_status = main_line >= 0 ? false : true;
+            sub_menu_delay_status = sub_line >= 0 ? false : true;
             date_separator_display = true;
         }
 
@@ -265,6 +299,7 @@ int main()
             time_update = false;
             time_now_min = time_now.tm_min;
         }
+
         if (!console_size_changed)
         {
 
@@ -720,34 +755,33 @@ int main()
                     goto exit_sub_menu;
             }
 
-            switch (sub_menu_adding_status)
-            {
-            case 1:
-                sub_menu_adding_status = 0;
-                goto to_do_title_setter;
-                break;
-            case 2:
-                sub_menu_adding_status = 0;
-                goto to_do_content_setter;
-                break;
-                // case 1:
-                //     goto to_do_title_setter;
-                //     break;
-                // case 1:
-                //     goto to_do_title_setter;
-                //     break;
-
-            default:
-                break;
-            }
-
-            /*----------------------------------
-            *   Add Content to To Do List
-            *----------------------------------*/
+            /*-------------------------------------------------------------------
+            *-------------------------Add Content to To Do List------------------
+            *-------------------------------------------------------------------*/
 
             if (sub_menu_add_todo_status == true)
-
             {
+                switch (sub_menu_adding_status)
+                {
+                case 1:
+                    sub_menu_adding_status = 0;
+                    goto to_do_title_setter;
+                    break;
+                case 2:
+                    sub_menu_adding_status = 0;
+                    goto to_do_content_setter;
+                    break;
+                    // case 1:
+                    //     goto to_do_title_setter;
+                    //     break;
+                    // case 1:
+                    //     goto to_do_title_setter;
+                    //     break;
+
+                default:
+                    break;
+                }
+
                 sub_menu_string_print = true;
 
                 sub_menu_time_now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
