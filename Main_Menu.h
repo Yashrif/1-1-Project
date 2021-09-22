@@ -72,7 +72,7 @@ Main_Menu::~Main_Menu() {}
 bool Main_Menu::set_cordinator(const COORD cordinator_value)
 {
     cordinator = cordinator_value;
-    
+
     return true;
 }
 
@@ -110,12 +110,16 @@ bool Main_Menu::add_data_to_file()
             if (temp.title_serial != 0)
             {
                 myfile << temp.title << endl;
-                myfile << temp.content.size() << endl;
+                myfile << temp.content.size() - 1 << endl;
+
                 for (size_t i{0}; i < temp.get_content_size(); i++)
                 {
-                    myfile << temp.active_status.at(i) << endl;
-                    myfile << temp.passive_status.at(i) << endl;
-                    myfile << temp.content.at(i) << endl;
+                    if (temp.content.at(i) != temp.content_initialization)
+                    {
+                        myfile << temp.content.at(i) << endl;
+                        myfile << temp.active_status.at(i) << endl;
+                        myfile << temp.passive_status.at(i) << endl;
+                    }
                 }
             }
         }
@@ -183,34 +187,37 @@ bool Main_Menu::get_data_from_file()
 
             myfile >> content_size;
 
+            int content_serial{1};
+            myfile.ignore();
+            
             for (; content_size > 0; content_size--)
             {
-                char temp_char{}, temp_char_2{};
-                myfile >> temp_char;
-                myfile.ignore();
-                myfile >> temp_char_2;
-
-                if (side_temp.content.at(0) == side_temp.content_initialization)
-                {
-
-                    side_temp.active_status.at(0) = temp_char;
-                    side_temp.passive_status.at(0) = temp_char_2;
-                }
-                else
-                {
-                    side_temp.active_status.push_back(temp_char);
-                    side_temp.passive_status.push_back(temp_char_2);
-                }
-
-                myfile.ignore();
 
                 getline(myfile, temp_str);
                 // temp_str.at(0) = toupper(temp_str.at(0));
 
-                if (side_temp.content.at(0) == side_temp.content_initialization)
-                    (side_temp.content).at(0) = temp_str;
-                else
-                    (side_temp.content).push_back(temp_str);
+                // if (side_temp.content.at(0) == side_temp.content_initialization)
+                //     (side_temp.content).at(0) = temp_str;
+                // else
+                side_temp.add_content(temp_str);
+
+                char temp_char{}, temp_char_2{};
+                myfile >> side_temp.active_status.at(content_serial);
+                myfile.ignore();
+                myfile >> side_temp.passive_status.at(content_serial);
+                myfile.ignore();
+
+                // if (side_temp.content.at(0) == side_temp.content_initialization)
+                // {
+
+                //     side_temp.active_status.at(0) = temp_char;
+                //     side_temp.passive_status.at(0) = temp_char_2;
+                // }
+                // else
+                // {
+
+                content_serial++;
+                // }
             }
             (this->content).push_back(side_temp);
         }

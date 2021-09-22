@@ -11,7 +11,7 @@ private:
     vector<char> active_status;
     vector<char> passive_status;
     std::vector<std::string> content;
-    std::string content_initialization{"Add something here"};
+    std::string content_initialization{"Add another"};
 
 public:
     friend class Main_Menu;
@@ -44,8 +44,8 @@ public:
 Side_Menu::Side_Menu()
 {
     this->content.push_back(content_initialization);
-    this->active_status.push_back(char(254));
-    this->passive_status.push_back(char(251));
+    this->active_status.push_back(char(175));
+    this->passive_status.push_back(char(175));
 }
 
 //Destructor
@@ -61,15 +61,9 @@ bool Side_Menu::set_title(const std::string title_value)
 }
 bool Side_Menu::add_content(const std::string content_value)
 {
-    if (this->content.at(0) == content_initialization)
-        this->content.at(0) = content_value;
-
-    else
-    {
-        this->content.push_back(content_value);
-        this->active_status.push_back(char(254));
-        this->passive_status.push_back(char(251));
-    }
+    this->content.push_back(content_value);
+    this->active_status.push_back(char(254));
+    this->passive_status.push_back(char(251));
 
     this->content.at(this->get_content_size() - 1).at(0) = toupper(content_value.at(0));
 
@@ -96,7 +90,7 @@ void Side_Menu::reset()
 void Side_Menu::sort()
 {
     Side_Menu temp;
-    int serial{0};
+    int serial{1};
 
     temp.title = this->title;
     temp.title_serial = this->title_serial;
@@ -124,4 +118,5 @@ void Side_Menu::sort()
 
     this->reset();
     *this = temp;
+    temp.reset();
 }
