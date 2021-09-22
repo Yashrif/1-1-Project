@@ -14,6 +14,17 @@ void get_console_cursor(COORD &cordinator)
     cordinator.X = console_cursor.dwCursorPosition.X;
     cordinator.Y = console_cursor.dwCursorPosition.Y;
 }
+COORD get_console_cursor()
+{
+    COORD cordinator;
+
+    CONSOLE_SCREEN_BUFFER_INFO console_cursor;
+    GetConsoleScreenBufferInfo(out_handle, &console_cursor);
+    cordinator.X = console_cursor.dwCursorPosition.X;
+    cordinator.Y = console_cursor.dwCursorPosition.Y;
+
+    return cordinator;
+}
 
 void set_console_cursor(const COORD &cordinator)
 {

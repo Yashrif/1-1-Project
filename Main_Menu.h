@@ -8,6 +8,8 @@ class Main_Menu
 private:
     static int total_main_menu_constructed;
 
+    COORD cordinator;
+
     std::string title;
     std::vector<Side_Menu> content;
 
@@ -24,6 +26,7 @@ public:
     ~Main_Menu();
 
     //Setters
+    bool set_cordinator(const COORD cordinator_value);
     bool set_title(const std::string title_value);
     bool add_content(const Side_Menu &content_value);
     bool add_data_to_file();
@@ -65,6 +68,14 @@ Main_Menu::Main_Menu()
 Main_Menu::~Main_Menu() {}
 
 //Setters
+
+bool Main_Menu::set_cordinator(const COORD cordinator_value)
+{
+    cordinator = cordinator_value;
+    
+    return true;
+}
+
 bool Main_Menu::set_title(const std::string title_value)
 {
     title = title_value;
@@ -136,6 +147,7 @@ int Main_Menu::get_highest_main_description_length() const
 
     return temp_length;
 }
+COORD Main_Menu::get_cordinator() const { return cordinator; }
 Side_Menu Main_Menu::get_content(int index_number) const { return content.at(index_number); }
 Side_Menu *const Main_Menu::get_content_reference(int index_number) { return &content.at(index_number); }
 

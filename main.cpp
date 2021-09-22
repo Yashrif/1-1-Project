@@ -87,7 +87,7 @@ int main()
 
     int delay_temp;
     bool display_status{true};
-    COORD console_cursor{0, 0}, temp_main_menu_cordinator{0, 0}, temp_cord{0}, temp_main_cord{0};
+    COORD console_cursor{0, 0}, temp_main_menu_cordinator{0, 0}, temp_main_cord{0};
 
     /*---------------------------------------------------------------------------------*
     *---------------------------------------Methods------------------------------------*
@@ -482,7 +482,6 @@ int main()
             {
                 display_status = true;
                 sub_menu_title_display_status = true;
-                main_menu_title_display_status = true;
 
                 system("cls");
                 date_and_separator_display_stauts = true;
@@ -625,10 +624,12 @@ int main()
                 {
                     set_console_cursor(console_cursor);
 
-                    if (sub_menu_title_display_status && i == main_menu_title_line)
+                    if (i == main_menu_title_line)
                     {
                         temp_main_menu_cordinator = console_cursor;
-                        console_cursor.Y += temp_size;
+
+                        if (sub_menu_title_display_status)
+                            console_cursor.Y += temp_size;
                     }
 
                     temp_main_cord = console_cursor;
@@ -636,6 +637,8 @@ int main()
 
                     if (main_menu_title_delay_status)
                     {
+                        main_menu.at(i).set_cordinator(console_cursor);
+
                         char temp_char = delay_print((main_menu.at(i)).get_title(), delay_temp);
                         if (temp_char != '\0')
                         {
@@ -646,11 +649,17 @@ int main()
 
                     else
                     {
-                        if (!sub_menu_title_display_status && main_menu_title_line == i)
-                            temp_cord = console_cursor;
+                        set_console_cursor((main_menu.at(i)).get_cordinator());
+                        cout << string((main_menu.at(i).get_title()).length(), ' ');
+                        set_console_cursor(console_cursor);
+                        main_menu.at(i).set_cordinator(get_console_cursor());
 
-                        else
+                        if (sub_menu_title_display_status || main_menu_title_line != i)
+                        {
+                            if (main_menu_title_line == i)
+                                set_console_cursor(temp_main_menu_cordinator);
                             cout << (main_menu.at(i)).get_title() << endl;
+                        }
 
                         if (!sub_menu_title_display_status && i == main_menu.size() - 1)
                         {
@@ -671,10 +680,10 @@ int main()
                             //Printing Delay Main Menu Title
 
                             SetConsoleTextAttribute(color, 6);
-                            set_console_cursor(temp_cord);
+                            set_console_cursor(temp_main_menu_cordinator);
                             cout << string(mid_x_start - left_sub_x_start, ' ');
 
-                            set_console_cursor(temp_cord);
+                            set_console_cursor(temp_main_menu_cordinator);
                             temp_key = delay_print((main_menu.at(main_menu_title_line)).get_title(), delay_temp);
                         }
                     }
@@ -706,12 +715,12 @@ int main()
                     : temp_size = (main_menu.at(main_menu_title_line)).get_content_number();
 
                 int temp_sub_menu_title_line = sub_menu_title_display_line;
+                COORD temp_cord{0};
 
                 for (size_t i{0}; i < temp_size; i++)
                 {
                     console_cursor.Y += 2;
                     set_console_cursor(console_cursor);
-                    COORD cord{console_cursor};
                     SetConsoleTextAttribute(color, 15);
 
                     if (sub_menu_title_delay_status)
@@ -778,7 +787,7 @@ int main()
                                                                       ? ((main_menu.at(main_menu_title_line)).get_content(sub_menu_title_line)).get_content_size()
                                                                       : sub_menu_content_max_display;
 
-                            (((main_menu).at(main_menu_title_line)).get_content_reference(sub_menu_title_line))->sort();
+                            // (((main_menu).at(main_menu_title_line)).get_content_reference(sub_menu_title_line))->sort();
 
                             for (size_t j{0}; j < temp_sub_menu_title_max_display; j++)
                             {
@@ -799,7 +808,7 @@ int main()
                             console_cursor.Y = 0;
                             set_console_cursor(console_cursor);
 
-                            (sub_menu_content_display_status) ? SetConsoleTextAttribute(color, 4) : SetConsoleTextAttribute(color, 6);
+                            (sub_menu_content_display_status) ? SetConsoleTextAttribute(color, 12) : SetConsoleTextAttribute(color, 6);
                             set_console_cursor(temp_cord);
                             cout << string(mid_x_start - left_sub_x_start, ' ');
                             set_console_cursor(temp_cord);
@@ -808,10 +817,11 @@ int main()
                                 temp_key = delay_print("   " + ((main_menu.at(main_menu_title_line)).get_content(sub_menu_title_line)).get_title(), delay_temp);
                             else
                                 temp_key = delay_print(to_string(((main_menu.at(main_menu_title_line)).get_content(sub_menu_title_line)).get_title_serial()) + ". " + ((main_menu.at(main_menu_title_line)).get_content(sub_menu_title_line)).get_title(), delay_temp);
+
+                            console_cursor = temp_cord;
                         }
                     }
 
-                    console_cursor = cord;
                     if (++temp_sub_menu_title_line >= (main_menu.at(main_menu_title_line)).get_content_number())
                         temp_sub_menu_title_line = 0;
                 }
@@ -867,6 +877,9 @@ int main()
 
             if (sub_menu_add_todo_status)
             {
+                sub_menu_title_display_status = false;
+                main_menu_title_display_status = false;
+
                 switch (sub_menu_adding_status)
                 {
                 case 1:
@@ -1114,6 +1127,8 @@ int main()
 
                 sub_menu_add_todo_status = false;
                 sub_menu_add_first_content = true;
+                main_menu_title_display_status = true;
+                sub_menu_title_display_status = true;
 
                 goto down_arrow_main_key_sub_menu;
             }

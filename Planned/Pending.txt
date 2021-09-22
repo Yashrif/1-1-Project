@@ -1,2 +1,1 @@
-add an option to go through sub menu contents
-sub menu toggle issue
+can't add more content to sub menu
