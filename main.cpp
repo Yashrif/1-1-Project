@@ -205,7 +205,7 @@ int main()
     console_height = 0;
     console_cursor_status(false);
 
-    /*------------------Odyssey--------------*/
+    /*-------------------------------------Odyssey-------------------------------------*/
 
     while (1)
     {
@@ -278,8 +278,10 @@ int main()
             console_cursor_status(false);
 
             display_status = true;
-            // main_menu_title_display_status = true;
-            // sub_menu_title_display_status = true;
+            if (sub_menu_content_display_status)
+                sub_menu_title_delay_status = true;
+
+            main_menu_title_display_status = true;
             main_menu_title_delay_status = main_menu_title_line >= 0 ? false : true;
             sub_menu_title_delay_status = sub_menu_title_line >= 0 ? false : true;
             date_and_separator_display_stauts = true;
@@ -1140,9 +1142,21 @@ int main()
                         (main_menu.at(main_menu_title_line)).add_content(temp_side_menu_content);
                         sub_menu_title_line = (main_menu.at(main_menu_title_line)).get_content_number() - 1;
                     }
+
+                    sub_menu_content_line = 0;
+                    sub_menu_content_display_status = true;
+                    if ((main_menu.at(main_menu_title_line).get_content(sub_menu_title_line)).get_content_size() < sub_menu_title_max_display)
+                    {
+                        main_menu_title_display_status = true;
+                        sub_menu_title_display_status = true;
+                    }
                 }
                 else
+                {
                     sub_menu_title_line = 0;
+                    main_menu_title_display_status = true;
+                    sub_menu_title_display_status = true;
+                }
 
                 console_cursor_status(false);
 
@@ -1151,12 +1165,6 @@ int main()
 
                 sub_menu_add_todo_status = false;
                 sub_menu_add_first_content = true;
-
-                main_menu_title_display_status = true;
-                sub_menu_title_display_status = true;
-                sub_menu_content_display_status = true;
-
-                sub_menu_content_line = 0;
 
                 goto down_arrow_main_key_sub_menu;
             }
