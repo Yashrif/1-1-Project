@@ -7,12 +7,23 @@
 
 HANDLE out_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
-void get_console_cursor(COORD *cordinator)
+void get_console_cursor(COORD &cordinator)
 {
     CONSOLE_SCREEN_BUFFER_INFO console_cursor;
     GetConsoleScreenBufferInfo(out_handle, &console_cursor);
-    cordinator->X = console_cursor.dwCursorPosition.X;
-    cordinator->Y = console_cursor.dwCursorPosition.Y;
+    cordinator.X = console_cursor.dwCursorPosition.X;
+    cordinator.Y = console_cursor.dwCursorPosition.Y;
+}
+COORD get_console_cursor()
+{
+    COORD cordinator;
+
+    CONSOLE_SCREEN_BUFFER_INFO console_cursor;
+    GetConsoleScreenBufferInfo(out_handle, &console_cursor);
+    cordinator.X = console_cursor.dwCursorPosition.X;
+    cordinator.Y = console_cursor.dwCursorPosition.Y;
+
+    return cordinator;
 }
 
 void set_console_cursor(const COORD &cordinator)
@@ -43,17 +54,27 @@ void set_console_size(int x, int y)
     RECT ConsoleRect;
     GetWindowRect(console, &ConsoleRect);
 
-    MoveWindow(console, ConsoleRect.left, ConsoleRect.top, x, y, TRUE);
+    MoveWindow(console, ConsoleRect.left, ConsoleRect.top, x, y, true);
 }
 
 char delay_print(std::string title, int time_milliseconds)
 {
+    int temp_console_width, temp_console_height, temp_console_width_2, temp_console_height_2;
+    get_console_size(temp_console_width, temp_console_height);
+
     char key{'\0'};
     size_t time_now{0}, time_now_2{0};
     int i{0};
     time_milliseconds = time_milliseconds / title.length();
     while (1)
     {
+        get_console_size(temp_console_width_2, temp_console_height_2);
+        if (temp_console_width_2 != temp_console_width || temp_console_height_2 != temp_console_height)
+        {
+            time_milliseconds = 0;
+            key = 32;
+        }
+
         time_now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         if (time_now - time_now_2 >= time_milliseconds)
         {
@@ -128,3 +149,120 @@ void set_font_size(int width, int height, int weight)
     std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 }
+
+void customized_input(string &string_value)
+{
+    string_value = '\0';
+    COORD temp_cord;
+    get_console_cursor(temp_cord);
+
+    char key{'\0'};
+    while (1)
+    {
+        key = '\0';
+
+        if (_kbhit())
+        {
+            key = _getch();
+            if (key >= 32 && key <= 126)
+            {
+                string_value += key;
+                set_console_cursor(temp_cord);
+                cout << string_value;
+            }
+            else if (key == 13 || key == 27)
+            {
+                break;
+            }
+        }
+    }
+}
+
+// void customized_input(string &string_value, int mid_x, int left_x)
+// {
+//     string_value = '\0';
+//     COORD temp_cord;
+//     get_console_cursor(temp_cord);
+//     bool space_print{true};
+
+//     char key{'\0'};
+//     while (1)
+//     {
+//         key = '\0';
+
+//         if (_kbhit())
+//         {
+//             key = _getch();
+//             if (key >= 32 && key <= 126)
+//             {
+//                 if (space_print)
+//                 {
+//                     cout << string(mid_x - left_x, ' ');
+//                     space_print = false;
+//                 }
+//                 string_value += key;
+//                 set_console_cursor(temp_cord);
+//                 cout << string_value;
+//             }
+//             else if (key == 13 || key == 27)
+//             {
+//                 break;
+//             }
+//         }
+//     }
+
+// }
+
+// void customized_input(vector<string> &string_value, int end_point, int starting_point)
+// {
+//     string_value.clear();
+//     string_value.push_back(string());
+
+//     int size{0};
+//     COORD temp_cord;
+//     get_console_cursor(temp_cord);
+//     bool space_print{true}, enter_status{false};
+
+//     char key{'\0'};
+//     while (1)
+//     {
+
+//         if (space_print)
+//         {
+//             set_console_cursor(temp_cord);
+//             cout << string(end_point - starting_point, ' ');
+//             set_console_cursor(temp_cord);
+//             cout << char(254) << " ";
+//             space_print = false;
+//         }
+
+//         key = '\0';
+
+//         if (_kbhit())
+//         {
+//             key = _getch();
+//             if (key >= 32 && key <= 126)
+//             {
+//                 string_value.at(size) += key;
+//                 set_console_cursor(temp_cord);
+//                 cout << char(254) << " " << string_value.at(size);
+//                 enter_status = true;
+//             }
+//             else if (key == 13 && enter_status)
+//             {
+//                 string_value.push_back(string());
+//                 size++;
+//                 space_print = true;
+//                 temp_cord.Y += 2;
+
+//                 enter_status = false;
+//             }
+
+//             else if (key == 27)
+//             {
+//                 break;
+//             }
+//         }
+//     }
+
+// }

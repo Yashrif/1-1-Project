@@ -1,71 +1,50 @@
-10
-41
-take breakfast
-1
-þ
-û
-1
-taken
-41
-take lunch
-2
-þ
-û
-1
-nope
-41
-take breakfast
-3
-þ
-û
-1
-taken
-41
-take lunch
-4
-þ
-û
-1
-nope
-41
-take lunch
-5
-þ
-û
-1
-nope
-41
-take lunch
-6
-þ
-û
-1
-nope
-41
-take lunch
-7
-þ
-û
-1
-nope
-41
-take lunch
 8
+Take breakfast
+2
+Taken
 þ
 û
-1
-nope
-41
-who are you actually
-9
-þ
-û
-1
-no one
-41
-Today's burden
-10
+Not now
 û
 þ
+Take lunch
+2
+Nope
+þ
+û
+Done
+û
+þ
+Take breakfast
+2
+Taken
+þ
+û
+Not now
+û
+þ
+Take lunch
 1
-Viva
+Nope
+þ
+û
+Take lunch
+1
+Nope
+þ
+û
+Take lunch
+1
+Nope
+þ
+û
+Take lunch
+1
+Nope
+þ
+û
+Take lunch
+1
+Nope
+þ
+û
