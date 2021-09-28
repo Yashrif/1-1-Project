@@ -1,3 +1,0 @@
-forward/backward arrow key to select;
-esc to back/exit;
-enter to toggle task status;

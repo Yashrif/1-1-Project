@@ -29,6 +29,7 @@ public:
     bool add_content_time(std::string time_value);
     bool add_content_date(int day_value, int month_value, int year_value);
     bool add_content_date(std::string date_value);
+    bool add_content_date_reverse(std::string date_value);
 
     //Getters
     const std::string get_title() const;
@@ -111,10 +112,10 @@ bool Side_Menu::add_content_time(int hour_value, int minutes_value)
             period_value = 1;
         }
         this->content_time.at(this->content.size() - 1) = (period_value + minutes_value * 10 + temp_hour_value * 1000);
-
         // cout << endl
         //      << endl
-        //      << "\t\t\t\t\t\t\t" << this->content_time.size() << endl;
+        //      << "\t\t\t\t" << this->content_time.at(this->content.size() - 1) << endl;
+        // Sleep(2000);
         return true;
     }
 
@@ -145,6 +146,18 @@ bool Side_Menu::add_content_date(std::string date_value)
     string_to_int >> date_int_value;
 
     this->content_date.at(this->content.size() - 1) = date_int_value;
+
+    return true;
+}
+bool Side_Menu::add_content_date_reverse(std::string date_value)
+{
+    int date_int_value{0};
+
+    std::stringstream string_to_int(date_value);
+    string_to_int >> date_int_value;
+
+    // this->content_date.at(this->content.size() - 1) = date_int_value;
+    this->add_content_date(date_int_value / 1000000, (date_int_value / 10000) % 100, date_int_value % 10000);
 
     return true;
 }
@@ -192,7 +205,7 @@ const std::string Side_Menu::get_content_date(int serial)
 {
     string content_date_str = to_string(this->get_day(serial)) + '-';
 
-    if (this->get_month(serial) > 10)
+    if (this->get_month(serial) >= 10)
         content_date_str += to_string(this->get_month(serial));
     else
         content_date_str += '0' + to_string(this->get_month(serial));
@@ -226,6 +239,8 @@ void Side_Menu::sort()
             temp.add_content(this->content.at(i));
             temp.active_status.at(serial) = this->active_status.at(i);
             temp.passive_status.at(serial) = this->passive_status.at(i);
+            temp.content_time.at(serial) = this->content_time.at(i);
+            temp.content_date.at(serial) = this->content_date.at(i);
             serial++;
         }
     }
@@ -236,6 +251,8 @@ void Side_Menu::sort()
             temp.add_content(this->content.at(i));
             temp.active_status.at(serial) = this->active_status.at(i);
             temp.passive_status.at(serial) = this->passive_status.at(i);
+            temp.content_time.at(serial) = this->content_time.at(i);
+            temp.content_date.at(serial) = this->content_date.at(i);
             serial++;
         }
     }
