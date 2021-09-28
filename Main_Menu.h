@@ -1,7 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include <fstream>
-#include "Side_Menu.h"
+#include "side_menu.h"
 
 class Main_Menu
 {
@@ -119,6 +119,8 @@ bool Main_Menu::add_data_to_file()
                         myfile << temp.content.at(i) << endl;
                         myfile << temp.active_status.at(i) << endl;
                         myfile << temp.passive_status.at(i) << endl;
+                        myfile << temp.content_time.at(i) << endl;
+                        myfile << temp.content_date.at(i) << endl;
                     }
                 }
             }
@@ -189,35 +191,21 @@ bool Main_Menu::get_data_from_file()
 
             int content_serial{1};
             myfile.ignore();
-            
+
             for (; content_size > 0; content_size--)
             {
-
                 getline(myfile, temp_str);
-                // temp_str.at(0) = toupper(temp_str.at(0));
-
-                // if (side_temp.content.at(0) == side_temp.content_initialization)
-                //     (side_temp.content).at(0) = temp_str;
-                // else
                 side_temp.add_content(temp_str);
 
                 char temp_char{}, temp_char_2{};
                 myfile >> side_temp.active_status.at(content_serial);
                 myfile.ignore();
                 myfile >> side_temp.passive_status.at(content_serial);
+                myfile >> side_temp.content_time.at(content_serial);
+                myfile >> side_temp.content_date.at(content_serial);
                 myfile.ignore();
 
-                // if (side_temp.content.at(0) == side_temp.content_initialization)
-                // {
-
-                //     side_temp.active_status.at(0) = temp_char;
-                //     side_temp.passive_status.at(0) = temp_char_2;
-                // }
-                // else
-                // {
-
                 content_serial++;
-                // }
             }
             (this->content).push_back(side_temp);
         }
