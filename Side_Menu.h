@@ -25,6 +25,7 @@ public:
     //Setters
     bool set_title(const std::string title_value);
     bool add_content(const std::string content_value);
+    bool set_content(const int serial, const std::string content_value);
     bool add_content_time(int hour_value, int minutes_value);
     bool add_content_time(std::string time_value);
     bool add_content_date(int day_value, int month_value, int year_value);
@@ -46,6 +47,8 @@ public:
     const int get_year(int serial);
     const std::string get_content_date(int serial);
     const std::string get_content_time(int serial);
+    const std::string get_content_date_composite(int serial);
+    const std::string get_content_time_composite(int serial);
 
     //methods
     void toggle(int serial); // For changing the current active_status
@@ -63,6 +66,12 @@ Side_Menu::Side_Menu()
     this->passive_status.push_back(char(175));
     this->content_time.push_back(0);
     this->content_date.push_back(0);
+    time_t now = std::time(0);
+    struct tm content_time_now;
+    localtime_s(&content_time_now, &now);
+
+    this->add_content_time(content_time_now.tm_hour, content_time_now.tm_min);
+    this->add_content_date(content_time_now.tm_mday, content_time_now.tm_mon + 1, content_time_now.tm_year + 1900);
 }
 
 //Destructor
@@ -92,6 +101,24 @@ bool Side_Menu::add_content(const std::string content_value)
 
     this->add_content_time(content_time_now.tm_hour, content_time_now.tm_min);
     this->add_content_date(content_time_now.tm_mday, content_time_now.tm_mon + 1, content_time_now.tm_year + 1900);
+
+    return true;
+}
+
+bool Side_Menu::set_content(const int serial, const std::string content_value)
+{
+    // this->content.at(serial).clear();
+
+    if (this->content.size() > serial)
+    {
+        this->content.at(serial) = content_value;
+        this->content.at(serial).at(0) = toupper(this->content.at(serial).at(0));
+    }
+    else
+    {
+        this->add_content(content_value);
+        this->content.at(this->content.size() - 1).at(0) = toupper(this->content.at(this->content.size() - 1).at(0));
+    }
 
     return true;
 }
@@ -189,7 +216,7 @@ const std::string Side_Menu::get_content_time(int serial)
 {
     string content_time_str = to_string(this->get_hour(serial)) + ':';
 
-    if (this->get_minute(serial) > 10)
+    if (this->get_minute(serial) >= 10)
         content_time_str += to_string(this->get_minute(serial));
     else
         content_time_str += '0' + to_string(this->get_minute(serial));
@@ -214,6 +241,8 @@ const std::string Side_Menu::get_content_date(int serial)
 
     return content_date_str;
 }
+const std::string Side_Menu::get_content_time_composite(int serial) { return to_string(this->content_time.at(serial)); }
+const std::string Side_Menu::get_content_date_composite(int serial) { return to_string(this->content_date.at(serial)); }
 
 //methods
 void Side_Menu::toggle(int serial) { swap(this->active_status.at(serial), this->passive_status.at(serial)); }

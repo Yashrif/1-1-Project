@@ -29,6 +29,14 @@ void set_console_cursor(const COORD &cordinator)
 {
     SetConsoleCursorPosition(out_handle, cordinator);
 }
+void set_console_cursor(const int x, const int y)
+{
+    COORD cordinator;
+    cordinator.X = x;
+    cordinator.Y = y;
+    
+    SetConsoleCursorPosition(out_handle, cordinator);
+}
 
 void console_cursor_status(bool status)
 {
