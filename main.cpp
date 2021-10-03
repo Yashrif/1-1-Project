@@ -24,15 +24,12 @@ int main()
     int left_main_x_start{0}, left_main_y_start{0}, left_main_height, left_sub_x_start{0}, left_sub_y_start{0};
 
     //Mid Panel
-
     int mid_x_start{0}, mid_y_start{0}, mid_y_end{0}, mid_height;
 
     //Right Panel
-
     int right_x_start{0}, right_y_start{0}, right_x_width;
 
     //Clock over Mid Panel
-
     int clock_y_start{0}, clock_x_start{0};
 
     /*--------Transition---------*/
@@ -57,9 +54,7 @@ int main()
 
     int sub_menu_title_line{-1}, sub_menu_title_line_2{0}, sub_menu_content_line{0},
         sub_menu_title_display_line{0}, sub_menu_content_display_line{0}, temp_sub_menu_content_display_line{0},
-        sub_menu_adding_status{0}, sub_menu_content_being_added{0}, temp_sub_menu_content_max_display{0},
-        sub_menu_add_content_diary_newline_threshold{0}, sub_menu_add_content_diary_newline_number{0},
-        sub_menu_add_content_diary_newline_last_number{0};
+        sub_menu_content_being_added{0}, temp_sub_menu_content_max_display{0};
 
     bool sub_menu_title_display_status{false}, sub_menu_title_delay_status{true}, sub_menu_string_print_status{false},
         sub_menu_content_display_status{false}, sub_menu_display_first_content{true}, sub_menu_add_title_status{false}, sub_menu_add_title_status_extended{false},
@@ -292,7 +287,8 @@ int main()
             mid_y_end = (console_height * 85) / 100;
             mid_height = mid_y_end - mid_y_start;
 
-            // Right Panel
+            /*-------------Right Panel------------*/
+
             right_x_start = (console_width * 45) / 100;
             right_y_start = console_height / 5;
             right_x_width = ((console_width - right_x_start) * 85 / 100);
@@ -486,9 +482,6 @@ int main()
                     sub_menu_add_content_status = true;
                     sub_menu_string_print_status = true;
                     sub_menu_display_first_content = true;
-                    sub_menu_add_content_diary_newline_threshold = 0;
-                    sub_menu_add_content_diary_newline_number = 0;
-                    sub_menu_add_content_diary_newline_last_number = 0;
 
                     sub_menu_content_being_added = 0;
 
@@ -935,6 +928,8 @@ int main()
                                          << ", "
                                          << ((main_menu.at(main_menu_title_line)).get_content(sub_menu_title_line)).get_content_date(1);
 
+                                    SetConsoleTextAttribute(color, 15);
+
                                     if (((main_menu.at(main_menu_title_line)).get_content(sub_menu_title_line)).get_content_size() >= 3)
                                     {
                                         int sub_menu_string_display_x{0};
@@ -1122,9 +1117,6 @@ int main()
                         sub_menu_add_content_status = true;
                         sub_menu_string_print_status = true;
                         sub_menu_display_first_content = true;
-                        sub_menu_add_content_diary_newline_threshold = 0;
-                        sub_menu_add_content_diary_newline_number = 0;
-                        sub_menu_add_content_diary_newline_last_number = 0;
 
                         sub_menu_content_being_added = 0;
 
@@ -1191,6 +1183,7 @@ int main()
                 //         }
                 //     }
                 // }
+
                 if (main_menu_title_line == 0 || main_menu_title_line == 2)
                 {
 
@@ -1533,6 +1526,7 @@ int main()
                             }
                             else if (sub_menu_content_being_added == 1)
                             {
+                                cout << "\b ";
                                 console_cursor.X = right_x_start;
                                 console_cursor.Y = right_y_start + 4;
                                 set_console_cursor(console_cursor);
@@ -1619,16 +1613,7 @@ int main()
                                 sub_menu_string += content_main_key;
 
                             else if (main_menu_title_line == 1 && sub_menu_content_being_added == 1)
-                            {
                                 sub_menu_string += content_main_key;
-                                sub_menu_add_content_diary_newline_last_number++;
-
-                                // if ((sub_menu_add_content_diary_newline_last_number % right_x_width) == 0)
-                                //     sub_menu_add_content_diary_newline_last_number = 0;
-
-                                // if (sub_menu_add_content_diary_newline_last_number % right_x_width == 0)
-                                //     sub_menu_add_content_diary_newline_threshold++;
-                            }
 
                             else if (main_menu_title_line == 2 && sub_menu_content_being_added == 1)
                             {
@@ -1685,7 +1670,6 @@ int main()
                                     sub_menu_content_line = 0;
                                     // sub_menu_add_content_time_status = true;
                                     sub_menu_content_being_added = 1;
-                                    sub_menu_add_content_diary_newline_threshold = 4;
 
                                     sub_menu_add_content_cursor.X = right_x_start;
                                     sub_menu_add_content_cursor.Y = right_y_start + 4;
@@ -1708,8 +1692,6 @@ int main()
                                 {
                                     cout << "\b ";
                                     sub_menu_string += '\n';
-                                    sub_menu_add_content_diary_newline_number++;
-                                    sub_menu_add_content_diary_newline_last_number = 0;
                                     sub_menu_add_content_cursor.X = right_x_start;
                                     sub_menu_add_content_cursor.Y++;
 
@@ -1766,10 +1748,15 @@ int main()
                                     cout << "\b ";
                                     sub_menu_content_line = 0;
                                     sub_menu_content_being_added = 1;
-                                    sub_menu_add_content_diary_newline_threshold = 4;
                                     sub_menu_display_first_content = false;
                                     sub_menu_add_content_cursor.X = right_x_start;
                                     sub_menu_add_content_cursor.Y = right_y_start + 4;
+
+                                    if (sub_menu_edit_content)
+                                    {
+                                        sub_menu_edit_content = false;
+                                        sub_menu_string = (main_menu.at(main_menu_title_line).get_content(sub_menu_title_line)).get_content(2);
+                                    }
 
                                     goto sub_menu_content_display_point;
                                 }
