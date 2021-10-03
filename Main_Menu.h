@@ -40,6 +40,9 @@ public:
     Side_Menu get_content(int index_number) const;
     Side_Menu *const get_content_reference(int index_number);
     bool get_data_from_file();
+
+    //Methods
+    void delete_content(int serial);
 };
 
 int Main_Menu::total_main_menu_constructed{0};
@@ -301,4 +304,11 @@ bool Main_Menu::get_data_from_file()
     myfile.close();
 
     return true;
+}
+
+//Methods
+
+void Main_Menu::delete_content(int serial)
+{
+    this->content.erase(this->content.begin() +serial);
 }

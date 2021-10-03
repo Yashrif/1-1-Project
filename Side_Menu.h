@@ -54,6 +54,7 @@ public:
     void toggle(int serial); // For changing the current active_status
     void reset();
     void sort();
+    void delete_content(int serial);
 };
 
 //Constructor
@@ -133,16 +134,13 @@ bool Side_Menu::add_content_time(int hour_value, int minutes_value)
         if (hour_value == 0)
             temp_hour_value = 12;
 
-        if (hour_value > 12)
+        if (hour_value >= 12)
         {
             temp_hour_value = hour_value - 12;
             period_value = 1;
         }
         this->content_time.at(this->content.size() - 1) = (period_value + minutes_value * 10 + temp_hour_value * 1000);
-        // cout << endl
-        //      << endl
-        //      << "\t\t\t\t" << this->content_time.at(this->content.size() - 1) << endl;
-        // Sleep(2000);
+        
         return true;
     }
 
@@ -183,7 +181,6 @@ bool Side_Menu::add_content_date_reverse(std::string date_value)
     std::stringstream string_to_int(date_value);
     string_to_int >> date_int_value;
 
-    // this->content_date.at(this->content.size() - 1) = date_int_value;
     this->add_content_date(date_int_value / 1000000, (date_int_value / 10000) % 100, date_int_value % 10000);
 
     return true;
@@ -289,4 +286,13 @@ void Side_Menu::sort()
     this->reset();
     *this = temp;
     temp.reset();
+}
+
+void Side_Menu::delete_content(int serial)
+{
+    this->content.erase(this->content.begin() + serial);
+    this->content_time.erase(this->content_time.begin() + serial);
+    this->content_date.erase(this->content_date.begin() + serial);
+    this->active_status.erase(this->active_status.begin() + serial);
+    this->passive_status.erase(this->passive_status.begin() + serial);
 }
