@@ -136,11 +136,12 @@ bool Side_Menu::add_content_time(int hour_value, int minutes_value)
 
         if (hour_value >= 12)
         {
-            temp_hour_value = hour_value - 12;
+            if (hour_value > 12)
+                temp_hour_value = hour_value - 12;
             period_value = 1;
         }
         this->content_time.at(this->content.size() - 1) = (period_value + minutes_value * 10 + temp_hour_value * 1000);
-        
+
         return true;
     }
 
