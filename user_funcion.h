@@ -1,9 +1,8 @@
 #include <bits/stdc++.h>
 #include <chrono>
 #include <windows.h>
-#include <string>
-#include "Main_Menu.h"
-#include "Side_Menu.h"
+#include "main_menu.h"
+#include "side_menu.h"
 
 HANDLE out_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -28,6 +27,14 @@ COORD get_console_cursor()
 
 void set_console_cursor(const COORD &cordinator)
 {
+    SetConsoleCursorPosition(out_handle, cordinator);
+}
+void set_console_cursor(const int x, const int y)
+{
+    COORD cordinator;
+    cordinator.X = x;
+    cordinator.Y = y;
+    
     SetConsoleCursorPosition(out_handle, cordinator);
 }
 
@@ -134,6 +141,8 @@ void get_time_now(std::string &returnval)
 
     returnval = std::to_string(hour_now) + ':';
     (ltm.tm_min < 10) ? returnval += "0" + std::to_string(ltm.tm_min) : returnval += std::to_string(ltm.tm_min);
+    returnval += ':';
+    (ltm.tm_sec < 10) ? returnval += "0" + std::to_string(ltm.tm_sec) : returnval += std::to_string(ltm.tm_sec);
     returnval += pm_am;
 }
 
@@ -150,7 +159,7 @@ void set_font_size(int width, int height, int weight)
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 }
 
-void customized_input(string &string_value)
+void customized_input(std::string &string_value)
 {
     string_value = '\0';
     COORD temp_cord;

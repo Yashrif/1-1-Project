@@ -1,7 +1,7 @@
 #pragma once
 #include <bits/stdc++.h>
 #include <fstream>
-#include "Side_Menu.h"
+#include "side_menu.h"
 
 class Main_Menu
 {
@@ -40,6 +40,9 @@ public:
     Side_Menu get_content(int index_number) const;
     Side_Menu *const get_content_reference(int index_number);
     bool get_data_from_file();
+
+    //Methods
+    void delete_content(int serial);
 };
 
 int Main_Menu::total_main_menu_constructed{0};
@@ -116,9 +119,36 @@ bool Main_Menu::add_data_to_file()
                 {
                     if (temp.content.at(i) != temp.content_initialization)
                     {
-                        myfile << temp.content.at(i) << endl;
+                        if (serial == 1 && i == 2)
+                        {
+                            int newline_count{0};
+                            string temp_content_string = temp.content.at(i);
+
+                            // cout<<temp_content_string.length()<<endl;
+                            // Sleep(5000);
+
+                            for (size_t j{0}; j < temp_content_string.length(); j++)
+                                if (temp_content_string.at(j) == '\n')
+                                    myfile << j - newline_count++ << " ";
+
+                            if (newline_count == 0)
+                                myfile << temp_content_string.length() << " ";
+
+                            myfile << endl;
+
+                            for (size_t j{0}; j < temp_content_string.length(); j++)
+                                if (temp_content_string.at(j) != '\n')
+                                    myfile << temp_content_string.at(j);
+
+                            myfile << endl;
+                        }
+                        else
+                            myfile << temp.content.at(i) << endl;
+
                         myfile << temp.active_status.at(i) << endl;
                         myfile << temp.passive_status.at(i) << endl;
+                        myfile << temp.content_time.at(i) << endl;
+                        myfile << temp.content_date.at(i) << endl;
                     }
                 }
             }
@@ -158,10 +188,10 @@ Side_Menu *const Main_Menu::get_content_reference(int index_number) { return &co
 bool Main_Menu::get_data_from_file()
 {
     static int get_data_method_called{0};
-    int serial = (get_data_method_called++ % 4);
+    int sub_menu_serial = (get_data_method_called++ % 4);
 
     fstream myfile;
-    myfile.open(file_name.at(serial).c_str(), ios::in | ios::binary | ios::app);
+    myfile.open(file_name.at(sub_menu_serial).c_str(), ios::in | ios::binary | ios::app);
     myfile.seekg(0);
 
     int temp_size, content_size;
@@ -189,35 +219,83 @@ bool Main_Menu::get_data_from_file()
 
             int content_serial{1};
             myfile.ignore();
-            
+
             for (; content_size > 0; content_size--)
             {
+                if (sub_menu_serial == 1 && content_size == 1)
+                {
+                    vector<int> diary_content_serial;
+                    int number{0};
+                    string diary_content_serial_string;
+                    string diary_conent_string;
 
-                getline(myfile, temp_str);
-                // temp_str.at(0) = toupper(temp_str.at(0));
+                    getline(myfile, diary_content_serial_string);
 
-                // if (side_temp.content.at(0) == side_temp.content_initialization)
-                //     (side_temp.content).at(0) = temp_str;
-                // else
-                side_temp.add_content(temp_str);
+                    diary_content_serial.clear();
 
-                char temp_char{}, temp_char_2{};
+                    for (size_t j{0}; j < diary_content_serial_string.length(); j++)
+                    {
+                        if (diary_content_serial_string.at(j) >= '0' && diary_content_serial_string.at(j) <= '9')
+                            number = number * 10 + (diary_content_serial_string.at(j) - '0');
+                        else if (diary_content_serial_string.at(j) == ' ' && number > 0)
+                        {
+                            diary_content_serial.push_back(number);
+                            number = 0;
+                        }
+                    }
+
+                    getline(myfile, temp_str);
+
+                    int t{0};
+
+                    for (size_t j{0}; j < temp_str.length(); j++)
+                    {
+                        if (diary_content_serial.at(t) == j && t < diary_content_serial.size())
+                        {
+                            diary_conent_string += '\n';
+                            int temp_int = t + 1;
+                            for (int k{temp_int}; k < diary_content_serial.size(); k++)
+                            {
+                                if (diary_content_serial.at(t) == diary_content_serial.at(k))
+                                {
+                                    t++;
+                                    diary_conent_string += '\n';
+                                }
+                                else
+                                {
+                                    t++;
+                                    break;
+                                }
+                            }
+                        }
+                        diary_conent_string += temp_str.at(j);
+                    }
+                    // cout << diary_conent_string.length() << endl;
+
+                    if (t < diary_content_serial.size() && diary_content_serial.at(t) == temp_str.length())
+                    {
+                        diary_conent_string += '\n';
+                        // cout << diary_content_serial.size() << "\t" << t << "\t" << diary_content_serial.at(t) << endl;
+                        // cout << diary_conent_string.length() << endl;
+                        // Sleep(3000);
+                    }
+
+                    side_temp.add_content(diary_conent_string);
+                }
+                else
+                {
+                    getline(myfile, temp_str);
+                    side_temp.add_content(temp_str);
+                }
+
                 myfile >> side_temp.active_status.at(content_serial);
                 myfile.ignore();
                 myfile >> side_temp.passive_status.at(content_serial);
+                myfile >> side_temp.content_time.at(content_serial);
+                myfile >> side_temp.content_date.at(content_serial);
                 myfile.ignore();
 
-                // if (side_temp.content.at(0) == side_temp.content_initialization)
-                // {
-
-                //     side_temp.active_status.at(0) = temp_char;
-                //     side_temp.passive_status.at(0) = temp_char_2;
-                // }
-                // else
-                // {
-
                 content_serial++;
-                // }
             }
             (this->content).push_back(side_temp);
         }
@@ -226,4 +304,11 @@ bool Main_Menu::get_data_from_file()
     myfile.close();
 
     return true;
+}
+
+//Methods
+
+void Main_Menu::delete_content(int serial)
+{
+    this->content.erase(this->content.begin() +serial);
 }
