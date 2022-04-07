@@ -162,61 +162,61 @@ int main()
 
     /*----------------------Primary Style--------------------------*/
 
-    // console_cursor.X = (console_width * .50) - welcome_text.length() / 2;
-    // console_cursor.Y = (console_height * .45);
-    // set_console_cursor(console_cursor);
+    console_cursor.X = (console_width * .50) - welcome_text.length() / 2;
+    console_cursor.Y = (console_height * .45);
+    set_console_cursor(console_cursor);
 
-    // temp_welcome_printing_duration = (welcome_printing_duration - std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() + welcome_printing_start) / welcome_text.length();
+    temp_welcome_printing_duration = (welcome_printing_duration - std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() + welcome_printing_start) / welcome_text.length();
 
-    // for (size_t i{0}; i < welcome_text.length(); i++)
-    // {
-    //     std::this_thread::sleep_for(std::chrono::milliseconds(temp_welcome_printing_duration));
-    //     console_cursor_status(false);
+    for (size_t i{0}; i < welcome_text.length(); i++)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(temp_welcome_printing_duration));
+        console_cursor_status(false);
 
-    //     SetConsoleTextAttribute(color, 11);
-    //     cout << "\b\b" << welcome_text.at(i) << " ";
+        SetConsoleTextAttribute(color, 11);
+        cout << "\b\b" << welcome_text.at(i) << " ";
 
-    //     SetConsoleTextAttribute(color, 8);
-    //     // cout << char(175);
-    //     cout << ">";
-    // }
-    // cout << " ";
-    // std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        SetConsoleTextAttribute(color, 8);
+        // cout << char(175);
+        cout << ">";
+    }
+    cout << " ";
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-    // for (size_t i{0}; i < welcome_text.length(); i++)
-    // {
-    //     cout << "\b\b\b\b "
-    //          << "<"
-    //          << " ";
-    //     std::this_thread::sleep_for(std::chrono::milliseconds(temp_welcome_printing_duration * 7 / 10));
-    // }
+    for (size_t i{0}; i < welcome_text.length(); i++)
+    {
+        cout << "\b\b\b\b "
+             << "<"
+             << " ";
+        std::this_thread::sleep_for(std::chrono::milliseconds(temp_welcome_printing_duration * 7 / 10));
+    }
 
     /*----------------------Alternative Style--------------------------*/
 
-    temp_welcome_printing_duration = (welcome_printing_duration_alternative - std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() + welcome_printing_start) / (2 * welcome_text.length());
+    // temp_welcome_printing_duration = (welcome_printing_duration_alternative - std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() + welcome_printing_start) / (2 * welcome_text.length());
 
-    console_cursor.X = (console_width * .50) - welcome_text_alternative.length() / 2;
-    console_cursor.Y = (console_height * .45);
-    set_console_cursor(console_cursor);
-    console_cursor_status(false);
+    // console_cursor.X = (console_width * .50) - welcome_text_alternative.length() / 2;
+    // console_cursor.Y = (console_height * .45);
+    // set_console_cursor(console_cursor);
+    // console_cursor_status(false);
 
-    SetConsoleTextAttribute(color, 11);
+    // SetConsoleTextAttribute(color, 11);
 
-    cout << welcome_text_alternative << endl;
+    // cout << welcome_text_alternative << endl;
 
-    for (int j{0}; j < 3; j++)
-    {
-        set_console_cursor(console_cursor);
+    // for (int j{0}; j < 3; j++)
+    // {
+    //     set_console_cursor(console_cursor);
 
-        for (size_t i{0}; i < welcome_text_alternative.length(); i++)
-        {
-            cout << welcome_text_alternative_uppercase.at(i);
+    //     for (size_t i{0}; i < welcome_text_alternative.length(); i++)
+    //     {
+    //         cout << welcome_text_alternative_uppercase.at(i);
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(temp_welcome_printing_duration));
+    //         std::this_thread::sleep_for(std::chrono::milliseconds(temp_welcome_printing_duration));
 
-            cout << '\b' << welcome_text_alternative.at(i);
-        }
-    }
+    //         cout << '\b' << welcome_text_alternative.at(i);
+    //     }
+    // }
 
     /*-------------Main Interface Initialization-------------*/
 
