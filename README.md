@@ -9,7 +9,7 @@
   <img src="./mainMenu.png" style="border-radius: 5px;  width: 90%;">
 </div>
 
-## Press
+## Keybindings
 
 - Up/down arrow key to scroll
 - Enter key to select
