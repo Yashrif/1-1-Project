@@ -1,7 +1,8 @@
 <!-- <div style="padding: 16px 16px; background: linear-gradient(135deg, #333, #111"> -->
 
 # Diary &amp; To-Do App
-**A terminal based diary & to-do app using only c++**
+
+**A terminal based diary & to-do app created only using c++. Easy to use. User can add tasks to the to-do list, reminders & daily events to the diary.**
 
 ## User's Interface
 
