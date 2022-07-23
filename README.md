@@ -2,7 +2,7 @@
 
 # Diary &amp; To-Do App
 
-**A terminal based diary & to-do app created only using c++. Easy to use. User can add tasks to the to-do list, reminders & daily events to the diary.**
+>**A terminal based diary & to-do app created only using c++. Easy to use. User can add tasks to the to-do list, reminders & daily events to the diary.**
 
 ## User's Interface
 
