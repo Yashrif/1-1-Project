@@ -15,7 +15,7 @@ private:
 
     const vector<std::string> main_menu_title{"To Do List", "Diary", "Reminders", "Settings"};
     const vector<std::string> main_menu_description{"Here see your tasks", "See your daily events", "See your reminders", "Personalize your settings"};
-    const vector<std::string> file_name{"to_do.dat", "diary.dat", "reminder.dat", "settings.dat"};
+    const vector<std::string> file_name{"assets/to_do.dat", "assets/diary.dat", "assets/reminder.dat", "assets/settings.dat"};
     const vector<std::string> side_menu_title{"Add task", "Add event", "Add event"};
     const vector<std::string> side_menu_description{"Add an task", "Add about your day", "Add an event that you want to be reminded"};
 

@@ -6,7 +6,7 @@
 
 ## User's Interface
 
-<div style="display: flex; justify-content: center; margin-top: 48px">
+<div style="display: flex; justify-content: center; margin: 48px 0">
   <img src="./mainMenu.png" style="border-radius: 5px;  width: 90%;">
 </div>
 

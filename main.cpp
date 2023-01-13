@@ -13,23 +13,23 @@ int main()
     HANDLE color = GetStdHandle(STD_OUTPUT_HANDLE);
 
     /*---------------------------------------------------------------------------------*
-    *-------------------------------------Declarations---------------------------------*
-    *---------------------------------------------------------------------------------*/
+     *-------------------------------------Declarations---------------------------------*
+     *---------------------------------------------------------------------------------*/
 
     /*-----------Menus-------*/
 
     vector<Main_Menu> main_menu(4);
 
-    //Left Panel
+    // Left Panel
     int left_main_x_start{0}, left_main_y_start{0}, left_main_height, left_sub_x_start{0}, left_sub_y_start{0};
 
-    //Mid Panel
+    // Mid Panel
     int mid_x_start{0}, mid_y_start{0}, mid_y_end{0}, mid_height;
 
-    //Right Panel
+    // Right Panel
     int right_x_start{0}, right_y_start{0}, right_x_width;
 
-    //Clock over Mid Panel
+    // Clock over Mid Panel
     int clock_y_start{0}, clock_x_start{0};
 
     /*--------Transition---------*/
@@ -74,9 +74,11 @@ int main()
     /*-------------Welcome Screen-------------*/
 
     size_t welcome_printing_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    const int welcome_printing_duration{1200}, welcome_printing_duration_alternative{1500};
+    const int welcome_printing_duration{1200}, welcome_printing_duration_alternative{1200};
     int temp_welcome_printing_duration{0};
-    string welcome_text{"Welcome"}, welcome_text_alternative{"Loading Data"}, welcome_text_alternative_uppercase{"LOADING DATA"};
+    string welcome_text{"Welcome"}, welcome_text_alternative{"Loading Data"}, welcome_text_alternative_uppercase = welcome_text_alternative;
+
+    transform(welcome_text_alternative.begin(), welcome_text_alternative.end(), welcome_text_alternative.begin(), ::toupper);
 
     /*-------------Others-------------*/
 
@@ -85,8 +87,8 @@ int main()
     COORD console_cursor{0, 0}, temp_main_menu_cordinator{0, 0}, temp_main_cord{0};
 
     /*---------------------------------------------------------------------------------*
-    *---------------------------------------Methods------------------------------------*
-    *---------------------------------------------------------------------------------*/
+     *---------------------------------------Methods------------------------------------*
+     *---------------------------------------------------------------------------------*/
 
     /*-------------------Writing to file for exterimental purposes-------------*/
 
@@ -232,7 +234,7 @@ int main()
 
     while (1)
     {
-        //Get main_key
+        // Get main_key
 
         // main_key = '\0';
 
@@ -266,21 +268,21 @@ int main()
 
             /*-------------Left Panel------------*/
 
-            //Main Menu
+            // Main Menu
             left_main_x_start = (console_width * 5) / 100;
             left_main_y_start = console_height / 5;
             left_main_height = (console_height * 0.75);
 
-            //Sub Menu
+            // Sub Menu
             left_sub_x_start = left_main_x_start + 4;
 
             /*-------------Mid Panel------------*/
 
-            //Clock over Mid Panel
+            // Clock over Mid Panel
             clock_y_start = (console_height * 5) / 100;
             clock_x_start = (console_width * 38) / 100 - 1;
 
-            //Seperator
+            // Seperator
 
             mid_x_start = (console_width * 38) / 100 - 2;
             mid_y_start = (console_height * 20) / 100;
@@ -492,7 +494,7 @@ int main()
                     //     sub_menu_string = (main_menu.at(main_menu_title_line).get_content(sub_menu_title_line)).get_content(2);
                 }
                 else
-                    (((main_menu).at(main_menu_title_line)).get_content_reference(sub_menu_title_line))->toggle(sub_menu_content_line); //toggle the status
+                    (((main_menu).at(main_menu_title_line)).get_content_reference(sub_menu_title_line))->toggle(sub_menu_content_line); // toggle the status
 
                 display_status = true;
             }
@@ -630,7 +632,7 @@ int main()
             display_clock:
 
                 string time_str;
-                get_time_now(time_str); //geting time now
+                get_time_now(time_str); // geting time now
                 SetConsoleTextAttribute(color, 9);
                 console_cursor.X = clock_x_start - (time_str.length() / 2);
                 console_cursor.Y = clock_y_start;
@@ -640,7 +642,7 @@ int main()
                 if (time_update)
                     goto update_clock_values;
 
-                get_date_now(time_str); //getting date now
+                get_date_now(time_str); // getting date now
                 console_cursor.X = clock_x_start - (time_str.length() / 2);
                 console_cursor.Y += 1;
                 set_console_cursor(console_cursor);
@@ -746,7 +748,7 @@ int main()
 
                         if (!sub_menu_title_display_status && i == main_menu.size() - 1)
                         {
-                            //Printing Main Menu Descrption
+                            // Printing Main Menu Descrption
 
                             console_cursor.X = right_x_start + ((console_width - right_x_start) * .50) - (((main_menu).at(main_menu_title_line)).get_description().length() / 2 + 1);
                             console_cursor.Y = right_y_start + left_main_height * .35;
@@ -760,7 +762,7 @@ int main()
                                  << string(main_menu.at(main_menu_title_line).get_highest_main_description_length() - ((main_menu).at(main_menu_title_line)).get_description().length() / 2, ' ')
                                  << endl;
 
-                            //Printing Delay Main Menu Title
+                            // Printing Delay Main Menu Title
 
                             SetConsoleTextAttribute(color, 6);
                             set_console_cursor(temp_main_menu_cordinator);
@@ -784,9 +786,9 @@ int main()
 
             if (sub_menu_title_display_status)
             {
-                main_menu_title_display_status = false; //Stoping Main Menu printing
+                main_menu_title_display_status = false; // Stoping Main Menu printing
 
-                //Removing Previously printed sub menu titles if these are less than sub_menu_max_display
+                // Removing Previously printed sub menu titles if these are less than sub_menu_max_display
 
                 if ((main_menu.at(main_menu_title_line)).get_content_number() < sub_menu_title_max_display)
                 {
@@ -863,7 +865,7 @@ int main()
 
                         if (!sub_menu_content_display_status && i == temp_size - 1)
                         {
-                            //Printing Sub Menu Content
+                            // Printing Sub Menu Content
 
                             if (main_menu_title_line == 1)
                             {
@@ -1033,7 +1035,7 @@ int main()
                                 }
                             }
 
-                            //Delay Printing Sub Menu Title
+                            // Delay Printing Sub Menu Title
 
                             SetConsoleTextAttribute(color, 6);
                             set_console_cursor(temp_cord);
@@ -1074,8 +1076,8 @@ int main()
             {
             sub_menu_content_display_point:
 
-                main_menu_title_display_status == false; //Stoping Main Menu printing
-                sub_menu_title_display_status == false;  //Stoping Sub Menu title printing
+                main_menu_title_display_status == false; // Stoping Main Menu printing
+                sub_menu_title_display_status == false;  // Stoping Sub Menu title printing
 
                 if (main_menu_title_line == 1)
                 {
@@ -1282,14 +1284,14 @@ int main()
             }
 
             /*--------------------------------------------------------------------
-            *-------------------------Add Sub Menu Title--------------------------
-            *-------------------------------------------------------------------*/
+             *-------------------------Add Sub Menu Title--------------------------
+             *-------------------------------------------------------------------*/
 
             if (sub_menu_add_title_status)
             {
-                main_menu_title_display_status = false;  //Stoping Main Menu printing
-                sub_menu_title_display_status = false;   //Stoping Sub Menu title printing
-                sub_menu_content_display_status = false; //Stoping Sub Menu content printing
+                main_menu_title_display_status = false;  // Stoping Main Menu printing
+                sub_menu_title_display_status = false;   // Stoping Sub Menu title printing
+                sub_menu_content_display_status = false; // Stoping Sub Menu content printing
 
                 while (1)
                 {
@@ -1391,14 +1393,14 @@ int main()
             }
 
             /*--------------------------------------------------------------------
-            *------------------------Add Sub Menu Content-------------------------
-            *-------------------------------------------------------------------*/
+             *------------------------Add Sub Menu Content-------------------------
+             *-------------------------------------------------------------------*/
 
             if (sub_menu_add_content_status)
             {
-                main_menu_title_display_status = false;  //Stoping Main Menu printing
-                sub_menu_title_display_status = false;   //Stoping Sub Menu title printing
-                sub_menu_content_display_status = false; //Stoping Sub Menu content printing
+                main_menu_title_display_status = false;  // Stoping Main Menu printing
+                sub_menu_title_display_status = false;   // Stoping Sub Menu title printing
+                sub_menu_content_display_status = false; // Stoping Sub Menu content printing
 
                 temp_sub_menu_content_max_display = (main_menu.at(main_menu_title_line).get_content(sub_menu_title_line)).get_content_size() < sub_menu_content_max_display
                                                         ? (main_menu.at(main_menu_title_line).get_content(sub_menu_title_line)).get_content_size()
@@ -1470,7 +1472,7 @@ int main()
 
                     set_console_cursor(console_cursor);
 
-                    //Printing content until key is pressed
+                    // Printing content until key is pressed
 
                     if (sub_menu_display_first_content)
                     {
@@ -1504,7 +1506,7 @@ int main()
                     else
                         cout << " ";
 
-                    //Printing Sub Menu String
+                    // Printing Sub Menu String
 
                     if (sub_menu_string_print_status)
                     {
@@ -1602,7 +1604,7 @@ int main()
 
                     content_main_key = '\0';
 
-                    //Key Actions
+                    // Key Actions
 
                     if (_kbhit())
                     {
@@ -1640,7 +1642,7 @@ int main()
                             sub_menu_display_first_content = false;
                         }
 
-                        //Backspace Key-------------------------------------------
+                        // Backspace Key-------------------------------------------
 
                         else if (content_main_key == 8 && sub_menu_string.length() > 0)
                         {
@@ -1650,7 +1652,7 @@ int main()
                             sub_menu_string_print_status = true;
                         }
 
-                        //Enter Key------------------------------------------------
+                        // Enter Key------------------------------------------------
 
                         else if (content_main_key == 13 && sub_menu_string.length() > 0)
                         {
@@ -1737,7 +1739,7 @@ int main()
                             }
                         }
 
-                        //Escape Key-------------------------------------------
+                        // Escape Key-------------------------------------------
 
                         else if (content_main_key == 27)
                         {
