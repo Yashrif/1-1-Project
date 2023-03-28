@@ -7,7 +7,7 @@
 ## User's Interface
 
 <div style="display: flex; justify-content: center; margin: 48px 0">
-  <img src="./assets/mainMenu.png" style="border-radius: 5px;  width: 90%;">
+  <img src="./assets/mainMenu.jpg" style="border-radius: 5px;  width: 90%;">
 </div>
 
 ## Keybindings
