@@ -6,36 +6,36 @@
 
 HANDLE out_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
-void get_console_cursor(COORD &cordinator)
+void get_console_cursor(COORD &coordinate)
 {
     CONSOLE_SCREEN_BUFFER_INFO console_cursor;
     GetConsoleScreenBufferInfo(out_handle, &console_cursor);
-    cordinator.X = console_cursor.dwCursorPosition.X;
-    cordinator.Y = console_cursor.dwCursorPosition.Y;
+    coordinate.X = console_cursor.dwCursorPosition.X;
+    coordinate.Y = console_cursor.dwCursorPosition.Y;
 }
 COORD get_console_cursor()
 {
-    COORD cordinator;
+    COORD coordinate;
 
     CONSOLE_SCREEN_BUFFER_INFO console_cursor;
     GetConsoleScreenBufferInfo(out_handle, &console_cursor);
-    cordinator.X = console_cursor.dwCursorPosition.X;
-    cordinator.Y = console_cursor.dwCursorPosition.Y;
+    coordinate.X = console_cursor.dwCursorPosition.X;
+    coordinate.Y = console_cursor.dwCursorPosition.Y;
 
-    return cordinator;
+    return coordinate;
 }
 
-void set_console_cursor(const COORD &cordinator)
+void set_console_cursor(const COORD &coordinate)
 {
-    SetConsoleCursorPosition(out_handle, cordinator);
+    SetConsoleCursorPosition(out_handle, coordinate);
 }
 void set_console_cursor(const int x, const int y)
 {
-    COORD cordinator;
-    cordinator.X = x;
-    cordinator.Y = y;
-    
-    SetConsoleCursorPosition(out_handle, cordinator);
+    COORD coordinate;
+    coordinate.X = x;
+    coordinate.Y = y;
+
+    SetConsoleCursorPosition(out_handle, coordinate);
 }
 
 void console_cursor_status(bool status)
